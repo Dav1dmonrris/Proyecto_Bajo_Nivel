@@ -17,7 +17,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode({imageSize.x, imageSize.y}), 
                            "Imagen tamaño real - SFML 3.0.2");
     
-    window.setFramerateLimit(1);
+    window.setFramerateLimit(60);
     
     sf::Sprite backgroundSprite(backgroundTexture);
     
