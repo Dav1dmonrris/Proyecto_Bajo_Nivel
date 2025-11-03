@@ -2,9 +2,11 @@
 #include <iostream>
 
 using namespace std;
+using namespace sf;
 
 int main() {
     // Cargar textura del fondo
+    // ---------------------------------------------------------------*
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/fondo_final3.jpg")) {
         cout << "ERROR: No se pudo cargar la imagen de fondo!" << endl;

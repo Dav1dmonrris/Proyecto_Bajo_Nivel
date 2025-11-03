@@ -29,7 +29,7 @@ int main()
 
     // Crear ventana con el tamaño exacto de la imagen
     // ---------------------------------------------------------------*
-    RenderWindow window(VideoMode({800, 600}), "Pacman", Style::Close);
+    RenderWindow window(VideoMode({1440, 780}), "Pacman", Style::Close);
 
     // Restricción de fotogramas.
     // ---------------------------------------------------------------*
