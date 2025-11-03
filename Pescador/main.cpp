@@ -15,7 +15,7 @@ int main() {
     
     // Cargar textura del pez
     sf::Texture fishTexture;
-    if (!fishTexture.loadFromFile("Recursos/tiburon.jpg")) { // Ajusta el nombre de tu archivo
+    if (!fishTexture.loadFromFile("Recursos/tiburon.jpg")) {
         cout << "ERROR: No se pudo cargar la imagen del pez!" << endl;
         return -1;
     }
@@ -31,13 +31,19 @@ int main() {
     sf::Sprite backgroundSprite(backgroundTexture);
     sf::Sprite fishSprite(fishTexture);
     
+    // Obtener el tamaño del pez - FORMA CORRECTA SFML 3.0
+    sf::Vector2u fishSizeU = fishTexture.getSize();
+    sf::Vector2f fishSize(static_cast<float>(fishSizeU.x), static_cast<float>(fishSizeU.y));
+    
     // Configurar posición inicial del pez (centro de la pantalla)
-    fishSprite.setPosition({imageSize.x / 2.0f, imageSize.y / 2.0f});
+    fishSprite.setPosition({imageSize.x / 2.0f - fishSize.x / 2, 
+                           imageSize.y / 2.0f - fishSize.y / 2});
     
     // Velocidad de movimiento del pez
     float fishSpeed = 5.0f;
     
     cout << "Imagen cargada: " << imageSize.x << " x " << imageSize.y << endl;
+    cout << "Tamaño del pez: " << fishSize.x << " x " << fishSize.y << endl;
     cout << "Ventana creada: " << imageSize.x << " x " << imageSize.y << endl;
     cout << "Controles: Flechas o WASD para mover el pez" << endl;
     cout << "Presiona ESC para salir" << endl;
@@ -55,10 +61,9 @@ int main() {
             }
         }
         
-        
+        // MOVIMIENTO DEL PEZ
         sf::Vector2f movement(0.0f, 0.0f);
         
-        // Flechas o WASD para movimiento
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
             movement.x -= fishSpeed;
@@ -79,31 +84,30 @@ int main() {
         // Aplicar movimiento al pez
         fishSprite.move(movement);
         
-        // **LIMITES DE LA PANTALLA** (para que el pez no se salga)
+        // **LÍMITES - FORMA CORRECTA SFML 3.0**
         sf::Vector2f fishPosition = fishSprite.getPosition();
-        sf::FloatRect fishBounds = fishSprite.getGlobalBounds();
         
         // Limite izquierdo
         if (fishPosition.x < 0) {
             fishSprite.setPosition({0, fishPosition.y});
         }
         // Limite derecho
-        if (fishPosition.x > imageSize.x) {
-            fishSprite.setPosition({imageSizls e.x - fishBounds.width, fishPosition.y});
+        if (fishPosition.x + fishSize.x > imageSize.x) {
+            fishSprite.setPosition({imageSize.x - fishSize.x, fishPosition.y});
         }
         // Limite superior
         if (fishPosition.y < 0) {
             fishSprite.setPosition({fishPosition.x, 0});
         }
         // Limite inferior
-        if (fishPosition.y + fishBounds.height > imageSize.y) {
-            fishSprite.setPosition({fishPosition.x, imageSize.y - fishBounds.height});
+        if (fishPosition.y + fishSize.y > imageSize.y) {
+            fishSprite.setPosition({fishPosition.x, imageSize.y - fishSize.y});
         }
         
-        // **DIBUJADO**
+        // DIBUJADO
         window.clear(sf::Color::Black);
         window.draw(backgroundSprite);
-        window.draw(fishSprite);  // Dibujar el pez
+        window.draw(fishSprite);
         window.display();
     }
     
