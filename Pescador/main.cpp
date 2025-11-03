@@ -17,9 +17,9 @@ int main() {
     sf::RenderWindow window(sf::VideoMode({imageSize.x, imageSize.y}), 
                            "XDDDDDDDDDD");
 
-    
     //Prueba de ventana fija. ---------------------------------------------------------*
     //sf::RenderWindow window(sf::VideoMode({400, 500}), "Imagen", sf::Style::Titlebar);
+    //---------------------------------------------------------------------------------*
 
     window.setFramerateLimit(60);
     
