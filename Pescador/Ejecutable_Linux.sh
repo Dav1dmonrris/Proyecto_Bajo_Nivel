@@ -11,4 +11,7 @@ rm main.o Juego
 g++ -c ./Pescador/main.cpp
 
 #Comando para convertir un archivo objeto en binario
-g++ main.o -o Juego -lsfml-graphics -lsfml-window -lsfml-system 
+g++ main.o -o Juego -lsfml-graphics -lsfml-window -lsfml-system
+
+#Comando para ejecutar el archivo binario
+./Juego
