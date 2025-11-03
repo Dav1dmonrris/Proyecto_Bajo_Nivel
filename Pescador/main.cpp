@@ -15,8 +15,12 @@ int main() {
     // Crear ventana con el tamaño exacto de la imagen
     sf::Vector2u imageSize = backgroundTexture.getSize();
     sf::RenderWindow window(sf::VideoMode({imageSize.x, imageSize.y}), 
-                           "Imagen tamaño real - SFML 3.0.2");
+                           "XDDDDDDDDDD");
+
     
+    //Prueba de ventana fija. ---------------------------------------------------------*
+    //sf::RenderWindow window(sf::VideoMode({400, 500}), "Imagen", sf::Style::Titlebar);
+
     window.setFramerateLimit(60);
     
     sf::Sprite backgroundSprite(backgroundTexture);
