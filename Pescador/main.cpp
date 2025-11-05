@@ -42,7 +42,7 @@ int main() {
     // Constantes de física (ajustadas para humano en tierra)
     float moveSpeed = 500.0f;        // Velocidad de movimiento horizontal
     float jumpForce = -600.0f;       // Fuerza de salto (negativa porque Y crece hacia abajo)
-    float gravity = 1100.0f;          // Gravedad terrestre
+    float gravity = 1100.0f;         // Gravedad terrestre
     float friction = 0.85f;          // Fricción al soltar teclas
     bool isOnGround = false;         // Si está tocando el "suelo"
     
@@ -53,6 +53,18 @@ int main() {
     RectangleShape ground(Vector2f(imageSize.x, 50.0f));
     ground.setPosition({0.0f, imageSize.y - 50.0f});
     ground.setFillColor(Color(100, 70, 30)); // Color marrón
+
+    // **CircleShape - CORREGIDO**
+    RectangleShape testCircle(Vector2f(50.0f,50.0f)); // Radio de 25 píxeles
+    testCircle.setFillColor(Color(100,70,30));
+    
+    // Posicionar el círculo - IMPORTANTE: setPosition establece la ESQUINA SUPERIOR IZQUIERDA del rectángulo delimitador
+    // Para centrarlo visualmente en (30, imageSize.y - 30), ajustamos la posición
+    testCircle.setPosition({200.0f, imageSize.y - 200.0f}); // Ajustar para que el centro esté en (30, imageSize.y - 30)
+
+    // Otra opción: usar setOrigin para cambiar el punto de referencia
+    // testCircle.setOrigin(25.0f, 25.0f); // Centrar el origen
+    // testCircle.setPosition({30.0f, imageSize.y - 30.0f}); // Ahora la posición es el centro
     
     // Reloj para deltaTime
     Clock clock;
@@ -81,10 +93,8 @@ int main() {
                      keyEvent->code == Keyboard::Key::W ||
                      keyEvent->code == Keyboard::Key::Up) && 
                     isOnGround) {
-
                     playerVelocity.y = jumpForce;
                     isOnGround = false;
-                    
                 }
             }
         }
@@ -154,11 +164,12 @@ int main() {
             playerSprite.setScale({-1.0f, 1.0f}); // Mirando a la izquierda (flip horizontal)
         }
         
-        // **DIBUJADO**
+        // **DIBUJADO - ¡AQUÍ ESTÁ LA SOLUCIÓN!**
         window.clear(Color::Black);
         window.draw(backgroundSprite);
         window.draw(ground); // Dibujar suelo
         window.draw(playerSprite);
+        window.draw(testCircle); // ¡ESTA ES LA LÍNEA QUE TE FALTABA!
         
         window.display();
     }
