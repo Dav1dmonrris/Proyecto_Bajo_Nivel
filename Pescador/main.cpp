@@ -68,7 +68,7 @@ int main() {
     // Bloque flotante (plataforma - SOLO colisión por arriba)
     RectangleShape floatingBlock(Vector2f(50.0f, 50.0f));
     floatingBlock.setPosition({200.0f, imageSize.y - 200.0f});
-    floatingBlock.setFillColor(Color(70, 130, 180));
+    floatingBlock.setFillColor(Color(100, 70, 30));
     
     // Variables para el bloque
     Vector2f blockPosition = floatingBlock.getPosition();
