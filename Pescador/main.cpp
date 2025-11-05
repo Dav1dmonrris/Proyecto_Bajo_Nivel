@@ -4,67 +4,75 @@
 using namespace std;
 using namespace sf;
 
+// Función auxiliar para verificar colisión entre dos rectángulos
+bool checkCollision(float x1, float y1, float w1, float h1, 
+                   float x2, float y2, float w2, float h2) {
+    return x1 < x2 + w2 &&
+           x1 + w1 > x2 &&
+           y1 < y2 + h2 &&
+           y1 + h1 > y2;
+}
+
 int main() {
-    // Cargar textura del fondo
+    // ========== CONFIGURACIÓN INICIAL ==========
+    
+    // Cargar texturas
     Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/Sky.png")) {
         cout << "ERROR: No se pudo cargar la imagen de fondo!" << endl;
         return -1;
     }
     
-    // Cargar textura del personaje
     Texture playerTexture;
     if (!playerTexture.loadFromFile("Recursos/Mario.png")) {
         cout << "ERROR: No se pudo cargar la imagen del personaje!" << endl;
         return -1;
     }
     
-    // Crear ventana con el tamaño exacto de la imagen
+    // Crear ventana
     Vector2u imageSize = backgroundTexture.getSize();
-    RenderWindow window(VideoMode({imageSize.x, imageSize.y}), 
-                       "Juego de Plataformas");
-
+    RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
     
     // Crear sprites
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
     
-    // Obtener el tamaño del personaje
+    // Obtener tamaño del personaje
     Vector2u playerSizeU = playerTexture.getSize();
     Vector2f playerSize(static_cast<float>(playerSizeU.x), static_cast<float>(playerSizeU.y));
     
-    // **VARIABLES DE FÍSICA HUMANA**
+    // ========== VARIABLES DEL JUGADOR ==========
     Vector2f playerPosition(imageSize.x / 2.0f - playerSize.x / 2, 
                            imageSize.y / 2.0f - playerSize.y / 2);
     Vector2f playerVelocity(0.0f, 0.0f);
+    Vector2f previousPosition = playerPosition;
     
-    // Constantes de física (ajustadas para humano en tierra)
-    float moveSpeed = 500.0f;        // Velocidad de movimiento horizontal
-    float jumpForce = -600.0f;       // Fuerza de salto (negativa porque Y crece hacia abajo)
-    float gravity = 1100.0f;         // Gravedad terrestre
-    float friction = 0.85f;          // Fricción al soltar teclas
-    bool isOnGround = false;         // Si está tocando el "suelo"
+    // Constantes de física
+    const float MOVE_SPEED = 500.0f;
+    const float JUMP_FORCE = -600.0f;
+    const float GRAVITY = 1100.0f;
+    const float FRICTION = 0.85f;
+    bool isOnGround = false;
+    bool isOnPlatform = false;
     
-    // Configurar posición inicial
     playerSprite.setPosition(playerPosition);
     
-    // Crear un "suelo" visual (para debug)
+    // ========== ELEMENTOS DEL ESCENARIO ==========
+    
+    // Suelo principal
     RectangleShape ground(Vector2f(imageSize.x, 50.0f));
     ground.setPosition({0.0f, imageSize.y - 50.0f});
-    ground.setFillColor(Color(100, 70, 30)); // Color marrón
-
-    // **CircleShape - CORREGIDO**
-    RectangleShape testCircle(Vector2f(50.0f,50.0f)); // Radio de 25 píxeles
-    testCircle.setFillColor(Color(100,70,30));
+    ground.setFillColor(Color(100, 70, 30));
     
-    // Posicionar el círculo - IMPORTANTE: setPosition establece la ESQUINA SUPERIOR IZQUIERDA del rectángulo delimitador
-    // Para centrarlo visualmente en (30, imageSize.y - 30), ajustamos la posición
-    testCircle.setPosition({200.0f, imageSize.y - 200.0f}); // Ajustar para que el centro esté en (30, imageSize.y - 30)
-
-    // Otra opción: usar setOrigin para cambiar el punto de referencia
-    // testCircle.setOrigin(25.0f, 25.0f); // Centrar el origen
-    // testCircle.setPosition({30.0f, imageSize.y - 30.0f}); // Ahora la posición es el centro
+    // Bloque flotante (plataforma - SOLO colisión por arriba)
+    RectangleShape floatingBlock(Vector2f(50.0f, 50.0f));
+    floatingBlock.setPosition({200.0f, imageSize.y - 200.0f});
+    floatingBlock.setFillColor(Color(70, 130, 180));
+    
+    // Variables para el bloque
+    Vector2f blockPosition = floatingBlock.getPosition();
+    Vector2f blockSize = floatingBlock.getSize();
     
     // Reloj para deltaTime
     Clock clock;
@@ -74,10 +82,11 @@ int main() {
     cout << "Controles: A/D o Flechas para mover, W/ESPACIO para saltar" << endl;
     cout << "Presiona ESC para salir" << endl;
     
+    // ========== BUCLE PRINCIPAL ==========
     while (window.isOpen()) {
-        // Calcular deltaTime para física consistente
         float deltaTime = clock.restart().asSeconds();
         
+        // Procesar eventos
         while (auto event = window.pollEvent()) {
             if (event->is<Event::Closed>()) {
                 window.close();
@@ -88,17 +97,24 @@ int main() {
                     window.close();
                 }
                 
+                // Salto
                 if ((keyEvent->code == Keyboard::Key::Space || 
                      keyEvent->code == Keyboard::Key::W ||
                      keyEvent->code == Keyboard::Key::Up) && 
-                    isOnGround) {
-                    playerVelocity.y = jumpForce;
+                    (isOnGround || isOnPlatform)) {
+                    playerVelocity.y = JUMP_FORCE;
                     isOnGround = false;
+                    isOnPlatform = false;
                 }
             }
         }
         
-        // **MOVIMIENTO HORIZONTAL**
+        // ========== ENTRADA Y FÍSICA ==========
+        
+        // Guardar posición anterior
+        previousPosition = playerPosition;
+        
+        // Movimiento horizontal
         float horizontalInput = 0.0f;
         
         if (Keyboard::isKeyPressed(Keyboard::Key::Left) || 
@@ -110,52 +126,82 @@ int main() {
             horizontalInput += 1.0f;
         }
         
-        // Aplicar movimiento horizontal
-        playerVelocity.x = horizontalInput * moveSpeed;
+        playerVelocity.x = horizontalInput * MOVE_SPEED;
         
-        // **APLICAR GRAVEDAD** 
-        if (!isOnGround) {
-            playerVelocity.y += gravity * deltaTime;
+        // Aplicar gravedad
+        if (!isOnGround && !isOnPlatform) {
+            playerVelocity.y += GRAVITY * deltaTime;
         } else {
-            playerVelocity.y = 0.0f; // No cae si está en suelo
+            playerVelocity.y = 0.0f;
         }
         
-        // **APLICAR FRICCIÓN** cuando no hay input horizontal
-        if (horizontalInput == 0.0f && isOnGround) {
-            playerVelocity.x *= friction;
-            // Detener completamente si la velocidad es muy pequeña
+        // Aplicar fricción
+        if (horizontalInput == 0.0f && (isOnGround || isOnPlatform)) {
+            playerVelocity.x *= FRICTION;
             if (abs(playerVelocity.x) < 1.0f) {
                 playerVelocity.x = 0.0f;
             }
         }
         
-        // **CALCULAR NUEVA POSICIÓN**
+        // Calcular nueva posición
         playerPosition.x += playerVelocity.x * deltaTime;
         playerPosition.y += playerVelocity.y * deltaTime;
         
-        // **DETECCIÓN DE SUELO**
-        float groundLevel = imageSize.y - 50.0f - playerSize.y; // Nivel del suelo visual
+        // ========== DETECCIÓN DE COLISIONES ==========
+        
+        // Resetear estados
         isOnGround = false;
-
-        float groundBlockTop = imageSize.y - 50.0f;
-        // Colisión con el bloque de prueba
-        if (playerPosition.x + playerSize.x > testCircle.getPosition().x &&
-            playerPosition.x < testCircle.getPosition().x + testCircle.getSize().x &&
-            playerPosition.y + playerSize.y > testCircle.getPosition().y &&
-            playerPosition.y < testCircle.getPosition().y + testCircle.getSize().y) {
-            // Colisión detectada - colocar al jugador encima del bloque
-            playerPosition.y = testCircle.getPosition().y - playerSize.y;
-            isOnGround = true;
+        
+        // **COLISIÓN MEJORADA: Plataforma de un solo sentido (solo por arriba)**
+        isOnPlatform = false;
+        
+        // Verificar si el jugador está cayendo SOBRE la plataforma
+        bool wasAbovePlatform = previousPosition.y + playerSize.y <= blockPosition.y;
+        bool isCollidingWithPlatform = checkCollision(
+            playerPosition.x, playerPosition.y, playerSize.x, playerSize.y,
+            blockPosition.x, blockPosition.y, blockSize.x, blockSize.y
+        );
+        
+        // **SOLUCIÓN: Solo colisionar si viene desde arriba y está cayendo**
+        if (isCollidingWithPlatform && wasAbovePlatform && playerVelocity.y >= 0) {
+            // Colocar al jugador encima de la plataforma
+            playerPosition.y = blockPosition.y - playerSize.y;
+            isOnPlatform = true;
             playerVelocity.y = 0.0f;
         }
         
+        // **IMPORTANTE: Permitir pasar a través de la plataforma por los lados y por debajo**
+        // No hacemos ninguna colisión lateral ni desde abajo
+        
+        // Colisión con el suelo principal
+        float groundLevel = imageSize.y - 50.0f - playerSize.y;
         if (playerPosition.y >= groundLevel) {
             playerPosition.y = groundLevel;
             isOnGround = true;
             playerVelocity.y = 0.0f;
         }
         
-        // **LÍMITES DE PANTALLA (solo horizontales)**
+        // **DETECCIÓN DE CAÍDA DE LA PLATAFORMA**
+        if (isOnPlatform) {
+            // Verificar si el jugador ya no está sobre la plataforma
+            bool stillOnPlatform = checkCollision(
+                playerPosition.x, playerPosition.y + 1.0f, // Pequeño margen hacia abajo
+                playerSize.x, playerSize.y,
+                blockPosition.x, blockPosition.y, 
+                blockSize.x, blockSize.y
+            );
+            
+            if (!stillOnPlatform) {
+                isOnPlatform = false;
+            }
+            
+            // También permitir saltar a través de la plataforma
+            if (playerVelocity.y < 0) { // Si está saltando hacia arriba
+                isOnPlatform = false;
+            }
+        }
+        
+        // ========== LÍMITES DE PANTALLA ==========
         if (playerPosition.x < 0) {
             playerPosition.x = 0;
             playerVelocity.x = 0;
@@ -165,23 +211,22 @@ int main() {
             playerVelocity.x = 0;
         }
         
-        // **ACTUALIZAR POSICIÓN DEL SPRITE**
+        // ========== ACTUALIZAR GRÁFICOS ==========
         playerSprite.setPosition(playerPosition);
         
-        // **ROTACIÓN/FLIP DEL SPRITE** (opcional - para que mire hacia donde se mueve)
+        // Rotación del sprite según dirección
         if (playerVelocity.x > 0.1f) {
-            playerSprite.setScale({1.0f, 1.0f}); // Mirando a la derecha
+            playerSprite.setScale({1.0f, 1.0f});
         } else if (playerVelocity.x < -0.1f) {
-            playerSprite.setScale({-1.0f, 1.0f}); // Mirando a la izquierda (flip horizontal)
+            playerSprite.setScale({-1.0f, 1.0f});
         }
         
-        // **DIBUJADO - ¡AQUÍ ESTÁ LA SOLUCIÓN!**
+        // ========== RENDERIZADO ==========
         window.clear(Color::Black);
         window.draw(backgroundSprite);
-        window.draw(ground); 
+        window.draw(ground);
+        window.draw(floatingBlock);
         window.draw(playerSprite);
-        window.draw(testCircle); 
-        
         window.display();
     }
     
