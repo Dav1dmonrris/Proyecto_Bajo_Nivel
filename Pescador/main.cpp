@@ -88,7 +88,6 @@ int main() {
                     window.close();
                 }
                 
-                // **DETECTAR SALTO (solo cuando se presiona la tecla)**
                 if ((keyEvent->code == Keyboard::Key::Space || 
                      keyEvent->code == Keyboard::Key::W ||
                      keyEvent->code == Keyboard::Key::Up) && 
@@ -114,7 +113,7 @@ int main() {
         // Aplicar movimiento horizontal
         playerVelocity.x = horizontalInput * moveSpeed;
         
-        // **APLICAR GRAVEDAD** (si no está en el suelo)
+        // **APLICAR GRAVEDAD** 
         if (!isOnGround) {
             playerVelocity.y += gravity * deltaTime;
         } else {
@@ -137,6 +136,18 @@ int main() {
         // **DETECCIÓN DE SUELO**
         float groundLevel = imageSize.y - 50.0f - playerSize.y; // Nivel del suelo visual
         isOnGround = false;
+
+        float groundBlockTop = imageSize.y - 50.0f;
+        // Colisión con el bloque de prueba
+        if (playerPosition.x + playerSize.x > testCircle.getPosition().x &&
+            playerPosition.x < testCircle.getPosition().x + testCircle.getSize().x &&
+            playerPosition.y + playerSize.y > testCircle.getPosition().y &&
+            playerPosition.y < testCircle.getPosition().y + testCircle.getSize().y) {
+            // Colisión detectada - colocar al jugador encima del bloque
+            playerPosition.y = testCircle.getPosition().y - playerSize.y;
+            isOnGround = true;
+            playerVelocity.y = 0.0f;
+        }
         
         if (playerPosition.y >= groundLevel) {
             playerPosition.y = groundLevel;
@@ -167,9 +178,9 @@ int main() {
         // **DIBUJADO - ¡AQUÍ ESTÁ LA SOLUCIÓN!**
         window.clear(Color::Black);
         window.draw(backgroundSprite);
-        window.draw(ground); // Dibujar suelo
+        window.draw(ground); 
         window.draw(playerSprite);
-        window.draw(testCircle); // ¡ESTA ES LA LÍNEA QUE TE FALTABA!
+        window.draw(testCircle); 
         
         window.display();
     }
