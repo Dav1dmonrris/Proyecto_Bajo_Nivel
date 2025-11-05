@@ -4,7 +4,9 @@
 using namespace std;
 using namespace sf;
 
+// ----------------------------------------------------------------------------
 // Función auxiliar para verificar colisión entre dos rectángulos
+// ----------------------------------------------------------------------------
 bool checkCollision(float x1, float y1, float w1, float h1, 
                    float x2, float y2, float w2, float h2) {
     return x1 < x2 + w2 &&
@@ -13,10 +15,14 @@ bool checkCollision(float x1, float y1, float w1, float h1,
            y1 + h1 > y2;
 }
 
+// ----------------------------------------------------------------------------
+// Función principal
+// ----------------------------------------------------------------------------
 int main() {
-    // ========== CONFIGURACIÓN INICIAL ==========
+    // ==================== CONFIGURACIÓN INICIAL =============================
     
-    // Cargar texturas
+    // Cargar texturas.
+    // ---------------------------------------------------------------*
     Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/Sky.png")) {
         cout << "ERROR: No se pudo cargar la imagen de fondo!" << endl;
@@ -29,16 +35,19 @@ int main() {
         return -1;
     }
     
-    // Crear ventana
+    // Crear ventana.
+    // ---------------------------------------------------------------*
     Vector2u imageSize = backgroundTexture.getSize();
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
     
-    // Crear sprites
+    // Crear sprites.
+    //---------------------------------------------------------------*
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
     
     // Obtener tamaño del personaje
+    //---------------------------------------------------------------*
     Vector2u playerSizeU = playerTexture.getSize();
     Vector2f playerSize(static_cast<float>(playerSizeU.x), static_cast<float>(playerSizeU.y));
     
@@ -58,35 +67,45 @@ int main() {
     
     playerSprite.setPosition(playerPosition);
     
-    // ========== ELEMENTOS DEL ESCENARIO ==========
+    // ===================== ELEMENTOS DEL ESCENARIO ==========================
     
     // Suelo principal
+    //-----------------------------------------------------------------*
     RectangleShape ground(Vector2f(imageSize.x, 50.0f));
     ground.setPosition({0.0f, imageSize.y - 50.0f});
     ground.setFillColor(Color(100, 70, 30));
     
     // Bloque flotante (plataforma - SOLO colisión por arriba)
+    // ---------------------------------------------------------------*
     RectangleShape floatingBlock(Vector2f(50.0f, 50.0f));
     floatingBlock.setPosition({200.0f, imageSize.y - 200.0f});
     floatingBlock.setFillColor(Color(100, 70, 30));
     
     // Variables para el bloque
+    // -----------------------------------------------*
     Vector2f blockPosition = floatingBlock.getPosition();
     Vector2f blockSize = floatingBlock.getSize();
     
     // Reloj para deltaTime
+    // --------------------*
     Clock clock;
     
+    // ========================= INFORMACIÓN INICIAL ==========================
+    // Salida por consola
+    // -----------------------------------------------------------------------*
     cout << "Imagen cargada: " << imageSize.x << " x " << imageSize.y << endl;
     cout << "Tamaño del personaje: " << playerSize.x << " x " << playerSize.y << endl;
     cout << "Controles: A/D o Flechas para mover, W/ESPACIO para saltar" << endl;
     cout << "Presiona ESC para salir" << endl;
     
-    // ========== BUCLE PRINCIPAL ==========
+    // ========================== BUCLE PRINCIPAL =============================
+    // Configuración del bucle para el juego.
+    // Mientras la ventana esté abierta...
+    // -----------------------------------------------------------------------*
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
         
-        // Procesar eventos
+        // Procesar eventos. -------------------------------------------------*
         while (auto event = window.pollEvent()) {
             if (event->is<Event::Closed>()) {
                 window.close();
@@ -97,7 +116,8 @@ int main() {
                     window.close();
                 }
                 
-                // Salto
+                // Manejo de salto
+                // -------------------------------------------------*
                 if ((keyEvent->code == Keyboard::Key::Space || 
                      keyEvent->code == Keyboard::Key::W ||
                      keyEvent->code == Keyboard::Key::Up) && 
@@ -109,7 +129,7 @@ int main() {
             }
         }
         
-        // ========== ENTRADA Y FÍSICA ==========
+        // ========================= ENTRADA Y FÍSICA =========================
         
         // Guardar posición anterior
         previousPosition = playerPosition;
@@ -147,7 +167,7 @@ int main() {
         playerPosition.x += playerVelocity.x * deltaTime;
         playerPosition.y += playerVelocity.y * deltaTime;
         
-        // ========== DETECCIÓN DE COLISIONES ==========
+        // ===================== DETECCIÓN DE COLISIONES ======================
         
         // Resetear estados
         isOnGround = false;
@@ -221,7 +241,10 @@ int main() {
             playerSprite.setScale({-1.0f, 1.0f});
         }
         
-        // ========== RENDERIZADO ==========
+        // ============================ RENDERIZADO ===========================
+        // Mostrar todo en pantalla
+        // Mostrar elementos creados.
+        // -------------------------------------------------------------------*
         window.clear(Color::Black);
         window.draw(backgroundSprite);
         window.draw(ground);
