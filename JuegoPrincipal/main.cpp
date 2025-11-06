@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Clases/AdministradorEnemigos.hpp"
 #include "Clases/Movimiento.hpp"
 #include "Clases/ObjetoRectangulo.hpp"
 
@@ -27,6 +28,8 @@ int main() {
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
     
+    cout << "Tamaño de ventana: " << imageSize.x << " x " << imageSize.y << endl;
+    
     // Crear sprites
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
@@ -40,7 +43,7 @@ int main() {
     // Sistema de movimiento del jugador
     Movimiento jugador(
         imageSize.x / 2.0f - playerSize.x / 2,  // posX
-        imageSize.y / 2.0f - playerSize.y / 2,  // posY
+        imageSize.y - 200.0f,  // posY - más arriba para ver mejor
         playerSize.x,                           // ancho
         playerSize.y                            // alto
     );
@@ -51,17 +54,22 @@ int main() {
     ground.setFillColor(Color(100, 70, 30));
     
     // Plataformas
-    ObjetoRectangulo plataforma1(50.0f, 50.0f, 200.0f, imageSize.y - 200.0f);
-    ObjetoRectangulo plataforma2(50.0f, 50.0f, 100.0f, imageSize.y - 350.0f);
+    ObjetoRectangulo plataforma1(200.0f, 20.0f, 100.0f, imageSize.y - 150.0f);
+    ObjetoRectangulo plataforma2(200.0f, 20.0f, 400.0f, imageSize.y - 250.0f);
+
+    // Administrador de enemigos
+    AdministradorEnemigos administradorEnemigos;
+
+    // Variables para el juego
+    bool jugadorVivo = true;
+    int puntuacion = 0;
     
     // Reloj para deltaTime
     Clock clock;
     
     // ========================= INFORMACIÓN INICIAL ==========================
-    cout << "Imagen cargada: " << imageSize.x << " x " << imageSize.y << endl;
-    cout << "Tamaño del personaje: " << playerSize.x << " x " << playerSize.y << endl;
-    cout << "Controles: A/D o Flechas para mover, W/ESPACIO para saltar" << endl;
-    cout << "Presiona ESC para salir" << endl;
+    cout << "🎮 Juego iniciado correctamente" << endl;
+    cout << "👾 Enemigos creados: 3 Goombas" << endl;
     
     // ========================== BUCLE PRINCIPAL =============================
     while (window.isOpen()) {
@@ -79,6 +87,13 @@ int main() {
                 }
             }
         }
+
+        // Si el jugador está muerto, no procesar entrada
+        if (!jugadorVivo) {
+            // Podrías añadir aquí una pantalla de game over
+            cout << "💀 Game Over! Puntuación: " << puntuacion << endl;
+            continue;
+        }
         
         // ========================= ACTUALIZAR JUEGO =========================
         
@@ -86,8 +101,11 @@ int main() {
         jugador.manejarEntrada();
         jugador.manejarSalto();
         
-        // Actualizar física
+        // Actualizar física del jugador
         jugador.actualizar(deltaTime);
+        
+        // Actualizar enemigos
+        administradorEnemigos.actualizar(deltaTime);
         
         // ===================== DETECCIÓN DE COLISIONES ======================
         
@@ -126,6 +144,10 @@ int main() {
         
         jugador.establecerEnPlataforma(enPlataforma);
         
+        // Verificar colisiones con enemigos
+        sf::FloatRect boundsJugador = playerSprite.getGlobalBounds();
+        administradorEnemigos.verificarColisionJugador(boundsJugador, jugadorVivo, puntuacion);
+        
         // Límites de pantalla
         Vector2f posJugador = jugador.obtenerPosicion();
         if (posJugador.x < 0) {
@@ -152,11 +174,31 @@ int main() {
         
         // ============================ RENDERIZADO ===========================
         window.clear(Color::Black);
+        
+        // Dibujar fondo
         window.draw(backgroundSprite);
+        
+        // Dibujar suelo
         window.draw(ground);
+        
+        // Dibujar plataformas
         plataforma1.dibujar(window);
         plataforma2.dibujar(window);
+        
+        // Dibujar enemigos (ANTES del jugador para mejor visualización)
+        administradorEnemigos.dibujar(window);
+        
+        // Dibujar jugador
         window.draw(playerSprite);
+        
+        // Mostrar información de debug
+        static int frames = 0;
+        frames++;
+        if (frames % 60 == 0) { // Cada segundo aproximadamente
+            cout << "🎯 Jugador en: (" << (int)posJugador.x << ", " << (int)posJugador.y << ")" << endl;
+            cout << "💰 Puntuación: " << puntuacion << endl;
+        }
+        
         window.display();
     }
     
