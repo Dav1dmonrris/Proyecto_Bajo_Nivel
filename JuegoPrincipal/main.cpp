@@ -11,7 +11,7 @@ using namespace sf;
 
 int main() {
     // ==================== CONFIGURACIÓN INICIAL =============================
-    
+    // ========================================================================
     // Cargar texturas
     Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/Sky.png")) {
@@ -34,7 +34,9 @@ int main() {
         cout << "✅ Textura de enemigo cargada correctamente" << endl;
     }
     
-    // Crear ventana
+    // ========================================================================
+    //                             Crear ventana
+    // ========================================================================
     Vector2u imageSize = backgroundTexture.getSize();
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
@@ -47,8 +49,9 @@ int main() {
     Vector2u playerSizeU = playerTexture.getSize();
     Vector2f playerSize(static_cast<float>(playerSizeU.x), static_cast<float>(playerSizeU.y));
     
-    // ========== CREAR OBJETOS ==========
-    
+    //=========================================================================
+    // ==========                 CREAR OBJETOS                 ===============
+    // ========================================================================
     // Jugador
     Movimiento jugador(
         imageSize.x / 2.0f - playerSize.x / 2,
@@ -193,6 +196,7 @@ int main() {
         }
         
         // ============================ RENDERIZADO ===========================
+        // ====================================================================
         window.clear(Color::Black);
         window.draw(backgroundSprite);
         window.draw(ground);
