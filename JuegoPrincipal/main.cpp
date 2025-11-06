@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+#include "Clases/Movimiento.hpp"
+
 using namespace std;
 using namespace sf;
 
@@ -30,32 +32,45 @@ int main() {
     }
     
     Texture playerTexture;
-    if (!playerTexture.loadFromFile("Recursos/Mario.png")) {
+    if (!playerTexture.loadFromFile("Recursos/MarioXD.png")) {
         cout << "ERROR: No se pudo cargar la imagen del personaje!" << endl;
         return -1;
     }
+
+    /*Texture MarioTexture;
+    if (!MarioTexture.loadFromFile("Recursos/MarioXD.png")) {
+        cout << "ERROR: No se pudo cargar la imagen de Mario!" << endl;
+        return -1;
+    }*/
     
     // Crear ventana.
     // ---------------------------------------------------------------*
     Vector2u imageSize = backgroundTexture.getSize();
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
+    
     window.setFramerateLimit(60);
     
     // Crear sprites.
     //---------------------------------------------------------------*
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
+    //Sprite MarioSprite(MarioTexture);
     
     // Obtener tamaño del personaje
     //---------------------------------------------------------------*
     Vector2u playerSizeU = playerTexture.getSize();
     Vector2f playerSize(static_cast<float>(playerSizeU.x), static_cast<float>(playerSizeU.y));
+
+    /*Vector2u MarioSizeU = MarioTexture.getSize();
+    Vector2f MarioSize(static_cast<float>(MarioSizeU.x), static_cast<float>(MarioSizeU.y));*/
     
     // ========== VARIABLES DEL JUGADOR ==========
     Vector2f playerPosition(imageSize.x / 2.0f - playerSize.x / 2, 
                            imageSize.y / 2.0f - playerSize.y / 2);
     Vector2f playerVelocity(0.0f, 0.0f);
     Vector2f previousPosition = playerPosition;
+
+
     
     // Constantes de física
     const float MOVE_SPEED = 500.0f;
@@ -80,11 +95,17 @@ int main() {
     RectangleShape floatingBlock(Vector2f(50.0f, 50.0f));
     floatingBlock.setPosition({200.0f, imageSize.y - 200.0f});
     floatingBlock.setFillColor(Color(100, 70, 30));
+
+    // Bloque flotante para prueba 1
+    RectangleShape floatingBlock2(Vector2f(50.0f, 50.0f));
+    floatingBlock2.setPosition({400.0f, imageSize.y - 350.0f});
+    floatingBlock2.setFillColor(Color(120, 90, 40));
     
     // Variables para el bloque
     // -----------------------------------------------*
     Vector2f blockPosition = floatingBlock.getPosition();
     Vector2f blockSize = floatingBlock.getSize();
+    Vector2f block2Position = floatingBlock2.getPosition();
     
     // Reloj para deltaTime
     // --------------------*
@@ -249,6 +270,7 @@ int main() {
         window.draw(backgroundSprite);
         window.draw(ground);
         window.draw(floatingBlock);
+        window.draw(floatingBlock2);
         window.draw(playerSprite);
         window.display();
     }
