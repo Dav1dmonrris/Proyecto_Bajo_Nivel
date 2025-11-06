@@ -1,17 +1,19 @@
 #!/bin/bash
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - 
-# Script para Archivo ejecutable en Linux
+# Script para Archivo ejecutable 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#Comando para limpiar los archivos objeto y binario viejos
-rm main.o ../Juego
+rm -f main.o ObjetoRectangulo.o Movimiento.o 
 
-#Comando para convertir un archivo en objeto
-g++ -c main.cpp
+# Compilar cada archivo fuente a objeto
+g++ -c main.cpp 
+g++ -c ./Clases/ObjetoRectangulo.cpp 
+g++ -c ./Clases/Movimiento.cpp 
 
-#Comando para convertir un archivo objeto en binario
-g++ main.o -o ../Juego -lsfml-graphics -lsfml-window -lsfml-system
+# Enlazar TODOS los archivos objeto juntos
+g++ main.o ObjetoRectangulo.o Movimiento.o -o ../Juego -lsfml-graphics -lsfml-window -lsfml-system
+
 
 #Comando para ejecutar el archivo binario
 ../Juego

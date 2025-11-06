@@ -1,6 +1,3 @@
-// ObjetoRectangulo.hpp
-// Definición de la clase ObjetoRectangulo
-//=============================================================================
 #ifndef OBJETORECTANGULO_HPP
 #define OBJETORECTANGULO_HPP
 
@@ -9,24 +6,16 @@
 using namespace std;
 using namespace sf;
 
-class ObjetoRectangulo
-{
-    private: //---------------------------------------------------------------*
-    //                                Atributos                               |
-    //------------------------------------------------------------------------*
-        RectangleShape rectangulo;
-    public: //----------------------------------------------------------------*
-    //                                Constructor                             |
-    //------------------------------------------------------------------------*
+class ObjetoRectangulo {
+private:
+    RectangleShape rectangulo;
+    
+public:
     ObjetoRectangulo(float ancho, float alto, float posicionX, float posicionY);
-
-    //------------------------------------------------------------------------*
-    //                                Métodos                                 |
-    //------------------------------------------------------------------------*
-    void dibujar(RenderWindow& ventana);    // Método para dibujar el rectángulo.
-    Vector2f ObtenerPosicion() const;       // Método para obtener la posición del rectángulo.
-    Vector2f ObtenerTamaño() const;         // Método para obtener el tamaño del rectángulo.
-
+    
+    void dibujar(RenderWindow& ventana);
+    Vector2f ObtenerPosicion() const;
+    Vector2f ObtenerTamaño() const;
 };
 
 #endif // OBJETORECTANGULO_HPP
