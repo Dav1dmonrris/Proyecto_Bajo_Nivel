@@ -1,8 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Clases/AdministradorEnemigos.hpp"
+#include <vector>
+#include <memory>
 #include "Clases/Movimiento.hpp"
 #include "Clases/ObjetoRectangulo.hpp"
+#include "Clases/Enemigo.hpp"
 
 using namespace std;
 using namespace sf;
@@ -23,12 +25,19 @@ int main() {
         return -1;
     }
     
+    // ✅ CARGAR TEXTURA DE ENEMIGO DIRECTAMENTE
+    Texture enemyTexture;
+    bool tieneTexturaEnemigo = enemyTexture.loadFromFile("Recursos/goomba.png");
+    if (!tieneTexturaEnemigo) {
+        cout << "⚠️  No se pudo cargar goomba.png - Los enemigos serán invisibles" << endl;
+    } else {
+        cout << "✅ Textura de enemigo cargada correctamente" << endl;
+    }
+    
     // Crear ventana
     Vector2u imageSize = backgroundTexture.getSize();
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
-    
-    cout << "Tamaño de ventana: " << imageSize.x << " x " << imageSize.y << endl;
     
     // Crear sprites
     Sprite backgroundSprite(backgroundTexture);
@@ -40,15 +49,15 @@ int main() {
     
     // ========== CREAR OBJETOS ==========
     
-    // Sistema de movimiento del jugador
+    // Jugador
     Movimiento jugador(
-        imageSize.x / 2.0f - playerSize.x / 2,  // posX
-        imageSize.y - 200.0f,  // posY - más arriba para ver mejor
-        playerSize.x,                           // ancho
-        playerSize.y                            // alto
+        imageSize.x / 2.0f - playerSize.x / 2,
+        imageSize.y - 200.0f,
+        playerSize.x,
+        playerSize.y
     );
     
-    // Suelo principal
+    // Suelo
     RectangleShape ground(Vector2f(imageSize.x, 50.0f));
     ground.setPosition({0.0f, imageSize.y - 50.0f});
     ground.setFillColor(Color(100, 70, 30));
@@ -57,19 +66,25 @@ int main() {
     ObjetoRectangulo plataforma1(200.0f, 20.0f, 100.0f, imageSize.y - 150.0f);
     ObjetoRectangulo plataforma2(200.0f, 20.0f, 400.0f, imageSize.y - 250.0f);
 
-    // Administrador de enemigos
-    AdministradorEnemigos administradorEnemigos;
-
-    // Variables para el juego
+    // ✅ CREAR ENEMIGOS
+    vector<Enemigo> enemigos;
+    enemigos.emplace_back(100.0f, 400.0f);
+    enemigos.emplace_back(400.0f, 400.0f);  
+    enemigos.emplace_back(700.0f, 300.0f);
+    
+    // Aplicar textura
+    if (tieneTexturaEnemigo) {
+        for (auto& enemigo : enemigos) {
+            enemigo.configurarTextura(enemyTexture);
+        }
+    }
+    
+    cout << "👾 " << enemigos.size() << " enemigos creados" << endl;
+    
+    // Variables del juego
     bool jugadorVivo = true;
     int puntuacion = 0;
-    
-    // Reloj para deltaTime
     Clock clock;
-    
-    // ========================= INFORMACIÓN INICIAL ==========================
-    cout << "🎮 Juego iniciado correctamente" << endl;
-    cout << "👾 Enemigos creados: 3 Goombas" << endl;
     
     // ========================== BUCLE PRINCIPAL =============================
     while (window.isOpen()) {
@@ -87,27 +102,27 @@ int main() {
                 }
             }
         }
-
-        // Si el jugador está muerto, no procesar entrada
-        if (!jugadorVivo) {
-            // Podrías añadir aquí una pantalla de game over
-            cout << "💀 Game Over! Puntuación: " << puntuacion << endl;
-            continue;
-        }
+        
+        if (!jugadorVivo) continue;
         
         // ========================= ACTUALIZAR JUEGO =========================
         
-        // Manejar entrada del jugador
+        // Jugador
         jugador.manejarEntrada();
         jugador.manejarSalto();
-        
-        // Actualizar física del jugador
         jugador.actualizar(deltaTime);
         
-        // Actualizar enemigos
-        administradorEnemigos.actualizar(deltaTime);
+        // ✅ ACTUALIZAR ENEMIGOS
+        for (auto& enemigo : enemigos) {
+            if (enemigo.estaVivo()) {
+                enemigo.actualizar(deltaTime);
+            }
+        }
         
         // ===================== DETECCIÓN DE COLISIONES ======================
+        
+        // OBTENER POSICIÓN DEL JUGADOR UNA SOLA VEZ
+        Vector2f posJugador = jugador.obtenerPosicion();
         
         // Colisión con suelo
         float nivelSuelo = imageSize.y - 50.0f - playerSize.y;
@@ -119,37 +134,44 @@ int main() {
         
         // Colisión con plataformas
         bool enPlataforma = false;
-        
-        // Plataforma 1
-        if (jugador.verificarColisionConPlataforma(
-            plataforma1.ObtenerPosicion(), 
-            plataforma1.ObtenerTamaño())) {
-            
-            jugador.resolverColisionPlataforma(
-                plataforma1.ObtenerPosicion(), 
-                plataforma1.ObtenerTamaño());
+        if (jugador.verificarColisionConPlataforma(plataforma1.ObtenerPosicion(), plataforma1.ObtenerTamaño())) {
+            jugador.resolverColisionPlataforma(plataforma1.ObtenerPosicion(), plataforma1.ObtenerTamaño());
             enPlataforma = true;
         }
-        
-        // Plataforma 2
-        if (jugador.verificarColisionConPlataforma(
-            plataforma2.ObtenerPosicion(), 
-            plataforma2.ObtenerTamaño())) {
-            
-            jugador.resolverColisionPlataforma(
-                plataforma2.ObtenerPosicion(), 
-                plataforma2.ObtenerTamaño());
+        if (jugador.verificarColisionConPlataforma(plataforma2.ObtenerPosicion(), plataforma2.ObtenerTamaño())) {
+            jugador.resolverColisionPlataforma(plataforma2.ObtenerPosicion(), plataforma2.ObtenerTamaño());
             enPlataforma = true;
         }
-        
         jugador.establecerEnPlataforma(enPlataforma);
         
-        // Verificar colisiones con enemigos
-        sf::FloatRect boundsJugador = playerSprite.getGlobalBounds();
-        administradorEnemigos.verificarColisionJugador(boundsJugador, jugadorVivo, puntuacion);
+        // ✅ COLISIÓN CON ENEMIGOS - CORREGIDO
+        for (auto& enemigo : enemigos) {
+            if (!enemigo.estaVivo()) continue;
+            
+            sf::Vector2f posEnemigo = enemigo.getPosicion();
+            
+            // Detección MANUAL
+            bool hayColision = (posJugador.x < posEnemigo.x + 50.0f) &&
+                               (posJugador.x + playerSize.x > posEnemigo.x) &&
+                               (posJugador.y < posEnemigo.y + 50.0f) &&
+                               (posJugador.y + playerSize.y > posEnemigo.y);
+            
+            if (hayColision) {
+                bool jugadorPorEncima = (posJugador.y + playerSize.y) < (posEnemigo.y + 25.0f);
+                
+                if (jugadorPorEncima) {
+                    enemigo.matar();
+                    puntuacion += 100;
+                    cout << "👾 Enemigo eliminado! Puntuación: " << puntuacion << endl;
+                    jugador.establecerVelocidadY(-300.0f);
+                } else {
+                    jugadorVivo = false;
+                    cout << "💀 El jugador ha muerto! Puntuación final: " << puntuacion << endl;
+                }
+            }
+        }
         
-        // Límites de pantalla
-        Vector2f posJugador = jugador.obtenerPosicion();
+        // Límites de pantalla - USAR LA MISMA posJugador
         if (posJugador.x < 0) {
             jugador.establecerPosicion(Vector2f(0, posJugador.y));
             jugador.establecerVelocidadX(0);
@@ -160,11 +182,9 @@ int main() {
         }
         
         // ===================== ACTUALIZAR GRÁFICOS =====================
+        playerSprite.setPosition(posJugador);
         
-        // Actualizar posición del sprite
-        playerSprite.setPosition(jugador.obtenerPosicion());
-        
-        // Rotación del sprite según dirección
+        // Rotación del sprite
         Vector2f velocidad = jugador.obtenerVelocidad();
         if (velocidad.x > 0.1f) {
             playerSprite.setScale({1.0f, 1.0f});
@@ -174,31 +194,17 @@ int main() {
         
         // ============================ RENDERIZADO ===========================
         window.clear(Color::Black);
-        
-        // Dibujar fondo
         window.draw(backgroundSprite);
-        
-        // Dibujar suelo
         window.draw(ground);
-        
-        // Dibujar plataformas
         plataforma1.dibujar(window);
         plataforma2.dibujar(window);
         
-        // Dibujar enemigos (ANTES del jugador para mejor visualización)
-        administradorEnemigos.dibujar(window);
-        
-        // Dibujar jugador
-        window.draw(playerSprite);
-        
-        // Mostrar información de debug
-        static int frames = 0;
-        frames++;
-        if (frames % 60 == 0) { // Cada segundo aproximadamente
-            cout << "🎯 Jugador en: (" << (int)posJugador.x << ", " << (int)posJugador.y << ")" << endl;
-            cout << "💰 Puntuación: " << puntuacion << endl;
+        // ✅ DIBUJAR ENEMIGOS
+        for (auto& enemigo : enemigos) {
+            enemigo.dibujar(window);
         }
         
+        window.draw(playerSprite);
         window.display();
     }
     

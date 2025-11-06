@@ -4,20 +4,22 @@
 # Script para Archivo ejecutable 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-rm -f main.o ObjetoRectangulo.o Movimiento.o Enemigo.o Goomba.o AdministradorEnemigos.o 
+rm -f main.o ObjetoRectangulo.o Movimiento.o Enemigo.o  
+
+#rm -f main.o ObjetoRectangulo.o Movimiento.o Enemigo.o Goomba.o AdministradorEnemigos.o
 
 # Compilar cada archivo fuente a objeto
 g++ -c main.cpp 
 g++ -c ./Clases/ObjetoRectangulo.cpp 
 g++ -c ./Clases/Movimiento.cpp 
 g++ -c ./Clases/Enemigo.cpp -o Enemigo.o
-g++ -c ./Clases/Goomba.cpp -o Goomba.o
-g++ -c ./Clases/Administrador_Enemigos.cpp -o AdministradorEnemigos.o
+#g++ -c ./Clases/Goomba.cpp -o Goomba.o
+#g++ -c ./Clases/Administrador_Enemigos.cpp -o AdministradorEnemigos.o
 
 # Enlazar TODOS los archivos objeto juntos
-g++ main.o ObjetoRectangulo.o Movimiento.o Enemigo.o Goomba.o AdministradorEnemigos.o -o Juego -lsfml-graphics -lsfml-window -lsfml-system
+g++ main.o ObjetoRectangulo.o Movimiento.o Enemigo.o -o Juego -lsfml-graphics -lsfml-window -lsfml-system
 
-
+#g++ main.o ObjetoRectangulo.o Movimiento.o Enemigo.o Goomba.o AdministradorEnemigos.o -o Juego -lsfml-graphics -lsfml-window -lsfml-system
 #Comando para ejecutar el archivo binario
 ./Juego
 

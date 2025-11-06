@@ -3,7 +3,7 @@
 #include <string>
 
 class Enemigo {
-protected:
+private:
     sf::Sprite sprite;
     sf::Vector2f posicion;
     sf::Vector2f velocidad;
@@ -14,29 +14,28 @@ protected:
     float distanciaMaxima;
     bool mirandoDerecha;
     bool vivo;
-    
+
 public:
-    Enemigo(const sf::Vector2f& posicionInicial, float velocidad, float distanciaPatrulla);
-    virtual ~Enemigo() = default;  // ✅ Destructor virtual
+    // Constructor simple
+    Enemigo(float x, float y);
     
-    // Métodos principales - TODOS virtuales
-    virtual void actualizar(float deltaTime);
-    virtual void dibujar(sf::RenderWindow& ventana);
+    // Métodos básicos
+    void actualizar(float deltaTime);
+    void dibujar(sf::RenderWindow& ventana);
     
-    // Métodos de estado
-    bool estaVivo() const { return vivo; }
-    void matar() { vivo = false; }
-    
-    // Getters para colisiones
-    sf::FloatRect obtenerBounds() const;
-    sf::Vector2f obtenerPosicion() const { return posicion; }
-    sf::Vector2f obtenerTamaño() const { return tamaño; }
-    
-    // Método para configurar la textura
+    // Métodos NUEVOS
     void configurarTextura(const sf::Texture& textura);
+    sf::FloatRect obtenerBounds() const;
+    void matar();
     
-protected:
-    // ✅ Añadido: método virtual que faltaba
-    virtual void actualizarMovimiento(float deltaTime);
+    // Getters
+    bool estaVivo() const { return vivo; }
+    sf::Vector2f getPosicion() const { return posicion; }
+    
+    // Para Goomba
+    void serPisado();
+    
+private:
+    void actualizarMovimiento(float deltaTime);
     void cambiarDireccion();
 };
