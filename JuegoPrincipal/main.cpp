@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Clases/Movimiento.hpp"
+#include "Clases/ObjetoRectangulo.hpp"
 
 using namespace std;
 using namespace sf;
@@ -92,6 +93,7 @@ int main() {
     
     // Bloque flotante (plataforma - SOLO colisión por arriba)
     // ---------------------------------------------------------------*
+    /* 
     RectangleShape floatingBlock(Vector2f(50.0f, 50.0f));
     floatingBlock.setPosition({200.0f, imageSize.y - 200.0f});
     floatingBlock.setFillColor(Color(100, 70, 30));
@@ -99,13 +101,23 @@ int main() {
     // Bloque flotante para prueba 1
     RectangleShape floatingBlock2(Vector2f(50.0f, 50.0f));
     floatingBlock2.setPosition({400.0f, imageSize.y - 350.0f});
-    floatingBlock2.setFillColor(Color(120, 90, 40));
+    floatingBlock2.setFillColor(Color(120, 90, 40));*/
+
+    // 
+    ObjetoRectangulo Rectangulo(50.0f, 50.0f, 200.0f, imageSize.y - 200.0f);
+    ObjetoRectangulo Rectangulo1(50.0f, 50.0f, 100.0f, imageSize.y - 350.0f);
     
     // Variables para el bloque
     // -----------------------------------------------*
-    Vector2f blockPosition = floatingBlock.getPosition();
-    Vector2f blockSize = floatingBlock.getSize();
-    Vector2f block2Position = floatingBlock2.getPosition();
+    //Vector2f blockPosition = floatingBlock.getPosition();
+    //Vector2f blockSize = floatingBlock.getSize();
+    //Vector2f block2Position = floatingBlock2.getPosition();
+
+    Vector2f PosicionRectangulo = Rectangulo.ObtenerPosicion();
+    Vector2f TamañoRectangulo = Rectangulo.ObtenerTamaño();
+
+    Vector2f PosicionRectangulo1 = Rectangulo1.ObtenerPosicion();
+    Vector2f TamañoRectangulo1 = Rectangulo1.ObtenerTamaño();
     
     // Reloj para deltaTime
     // --------------------*
@@ -197,16 +209,22 @@ int main() {
         isOnPlatform = false;
         
         // Verificar si el jugador está cayendo SOBRE la plataforma
-        bool wasAbovePlatform = previousPosition.y + playerSize.y <= blockPosition.y;
+        /*bool wasAbovePlatform = previousPosition.y + playerSize.y <= blockPosition.y;
         bool isCollidingWithPlatform = checkCollision(
             playerPosition.x, playerPosition.y, playerSize.x, playerSize.y,
             blockPosition.x, blockPosition.y, blockSize.x, blockSize.y
+        );*/
+
+        bool wasAbovePlatform = previousPosition.y + playerSize.y <= PosicionRectangulo.y;
+        bool isCollidingWithPlatform = checkCollision(
+            playerPosition.x, playerPosition.y, playerSize.x, playerSize.y,
+            PosicionRectangulo.x, PosicionRectangulo.y, TamañoRectangulo.x, TamañoRectangulo.y
         );
         
         // **SOLUCIÓN: Solo colisionar si viene desde arriba y está cayendo**
         if (isCollidingWithPlatform && wasAbovePlatform && playerVelocity.y >= 0) {
             // Colocar al jugador encima de la plataforma
-            playerPosition.y = blockPosition.y - playerSize.y;
+            playerPosition.y = PosicionRectangulo.y - playerSize.y;
             isOnPlatform = true;
             playerVelocity.y = 0.0f;
         }
@@ -228,8 +246,8 @@ int main() {
             bool stillOnPlatform = checkCollision(
                 playerPosition.x, playerPosition.y + 1.0f, // Pequeño margen hacia abajo
                 playerSize.x, playerSize.y,
-                blockPosition.x, blockPosition.y, 
-                blockSize.x, blockSize.y
+                PosicionRectangulo.x, PosicionRectangulo.y, 
+                TamañoRectangulo.x, TamañoRectangulo.y
             );
             
             if (!stillOnPlatform) {
@@ -269,8 +287,10 @@ int main() {
         window.clear(Color::Black);
         window.draw(backgroundSprite);
         window.draw(ground);
-        window.draw(floatingBlock);
-        window.draw(floatingBlock2);
+        //window.draw(floatingBlock);
+        //window.draw(floatingBlock2);
+        Rectangulo.dibujar(window);
+        Rectangulo1.dibujar(window);
         window.draw(playerSprite);
         window.display();
     }

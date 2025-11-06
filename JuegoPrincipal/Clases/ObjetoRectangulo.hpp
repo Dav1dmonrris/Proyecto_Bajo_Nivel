@@ -23,7 +23,10 @@ class ObjetoRectangulo
     //------------------------------------------------------------------------*
     //                                Métodos                                 |
     //------------------------------------------------------------------------*
-    void dibujar(RenderWindow& ventana);
+    void dibujar(RenderWindow& ventana);    // Método para dibujar el rectángulo.
+    Vector2f ObtenerPosicion() const;       // Método para obtener la posición del rectángulo.
+    Vector2f ObtenerTamaño() const;         // Método para obtener el tamaño del rectángulo.
+
 };
 
 #endif // OBJETORECTANGULO_HPP
