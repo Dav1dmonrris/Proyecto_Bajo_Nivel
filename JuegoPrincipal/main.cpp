@@ -47,6 +47,7 @@ int main() {
     // Crear sprites --------------------------*
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
+    Sprite EnemigoSpirte(enemyTexture);
     
     // Obtener tamaño del personaje ---------------------------------------------------------*
     Vector2u playerSizeU = playerTexture.getSize();
@@ -71,6 +72,12 @@ int main() {
     // Plataformas
     ObjetoRectangulo plataforma1(200.0f, 20.0f, 100.0f, imageSize.y - 150.0f);
     ObjetoRectangulo plataforma2(200.0f, 20.0f, 400.0f, imageSize.y - 250.0f);
+
+    ObjetoRectangulo plataforma3(200.0f, 20.0f, 400.0f, imageSize.y - 150.0f);
+    ObjetoRectangulo plataforma4(200.0f, 20.0f, 100.0f, imageSize.y - 250.0f);
+
+    ObjetoRectangulo plataforma5(200.0f, 20.0f, 700.0f, imageSize.y - 150.0f);
+    ObjetoRectangulo plataforma6(200.0f, 20.0f, 1000.0f, imageSize.y - 150.0f);
 
     // ✅ CREAR ENEMIGOS
     vector<Enemigo> enemigos;
@@ -203,8 +210,14 @@ int main() {
         window.clear(Color::Black);
         window.draw(backgroundSprite);
         window.draw(ground);
+
+        // Dibujar plataforma en pantalla.
         plataforma1.dibujar(window);
         plataforma2.dibujar(window);
+        plataforma3.dibujar(window);
+        plataforma4.dibujar(window);
+        plataforma5.dibujar(window);
+        plataforma6.dibujar(window);
         
         // ✅ DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
@@ -213,7 +226,8 @@ int main() {
         
         window.draw(playerSprite);
         window.display();
+        window.draw(EnemigoSpirte);
     }
-    
+
     return 0;
 }
