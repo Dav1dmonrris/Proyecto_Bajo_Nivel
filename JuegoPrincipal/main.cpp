@@ -13,19 +13,22 @@ int main() {
     // ==================== CONFIGURACIÓN INICIAL =============================
     // ========================================================================
     // Cargar texturas
+    // ------------------------------------------------------------------------
+    // Fondo del juego.
     Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/Sky.png")) {
         cout << "ERROR: No se pudo cargar la imagen de fondo!" << endl;
         return -1;
     }
     
+    // Imagen de Mario.
     Texture playerTexture;
     if (!playerTexture.loadFromFile("Recursos/MarioXD.png")) {
         cout << "ERROR: No se pudo cargar la imagen del personaje!" << endl;
         return -1;
     }
     
-    // ✅ CARGAR TEXTURA DE ENEMIGO DIRECTAMENTE
+    // Imagen del enemigo.
     Texture enemyTexture;
     bool tieneTexturaEnemigo = enemyTexture.loadFromFile("Recursos/goomba.png");
     if (!tieneTexturaEnemigo) {
@@ -41,11 +44,11 @@ int main() {
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
     
-    // Crear sprites
+    // Crear sprites --------------------------*
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
     
-    // Obtener tamaño del personaje
+    // Obtener tamaño del personaje ---------------------------------------------------------*
     Vector2u playerSizeU = playerTexture.getSize();
     Vector2f playerSize(static_cast<float>(playerSizeU.x), static_cast<float>(playerSizeU.y));
     
@@ -187,7 +190,7 @@ int main() {
         // ===================== ACTUALIZAR GRÁFICOS =====================
         playerSprite.setPosition(posJugador);
         
-        // Rotación del sprite
+        // Rotación del sprite -----------------------*
         Vector2f velocidad = jugador.obtenerVelocidad();
         if (velocidad.x > 0.1f) {
             playerSprite.setScale({1.0f, 1.0f});
