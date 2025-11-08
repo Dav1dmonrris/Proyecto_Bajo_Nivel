@@ -56,28 +56,59 @@ int main() {
     //=========================================================================
     // ==========                 CREAR OBJETOS                 ===============
     // ========================================================================
-    // Jugador
+    // Jugador -------------------------------*
     Movimiento jugador(
         imageSize.x / 2.0f - playerSize.x / 2,
         imageSize.y - 200.0f,
         playerSize.x,
         playerSize.y
-    );
+    ); //-------------------------------------*
     
-    // Suelo
+    // Suelo -------------------------------------------*
     RectangleShape ground(Vector2f(imageSize.x, 50.0f));
     ground.setPosition({0.0f, imageSize.y - 50.0f});
     ground.setFillColor(Color(100, 70, 30));
+    // -------------------------------------------------*
     
-    // Plataformas
-    ObjetoRectangulo plataforma1(200.0f, 20.0f, 100.0f, imageSize.y - 150.0f);
-    ObjetoRectangulo plataforma2(200.0f, 20.0f, 400.0f, imageSize.y - 250.0f);
+    // Plataformas | Tamaño igualitaro 200 x 20 ================================*
+    // --------------------------------------------------------------------------
+    float anchoP = 200.0f;           // Variable local para ancho de plataforma.
+    float alturaP = 20.0f;           // Variable local para altura de plataforma.
+    // Sección 1. -------------*
+    float posicionS1 = imageSize.y - 150.0f;
+    ObjetoRectangulo plataforma1(anchoP, alturaP, 100.0f, posicionS1);
+    ObjetoRectangulo plataforma2(anchoP, alturaP, 400.0f, posicionS1);
+    ObjetoRectangulo plataforma3(anchoP, alturaP, 700.0f, posicionS1);
+    ObjetoRectangulo plataforma4(anchoP, alturaP, 1000.0f, posicionS1);
 
-    ObjetoRectangulo plataforma3(200.0f, 20.0f, 400.0f, imageSize.y - 150.0f);
-    ObjetoRectangulo plataforma4(200.0f, 20.0f, 100.0f, imageSize.y - 250.0f);
+    // Sección 2. --------------*
+    float posicionS2 = imageSize.y - 250.0f;
+    ObjetoRectangulo plataforma5(anchoP, alturaP, 400.0f, posicionS2);
+    ObjetoRectangulo plataforma6(anchoP, alturaP, 100.0f, posicionS2);
+    ObjetoRectangulo plataforma7(anchoP, alturaP, 700.0f, posicionS2);
+    ObjetoRectangulo plataforma8(anchoP, alturaP, 1000.0f, posicionS2);
 
-    ObjetoRectangulo plataforma5(200.0f, 20.0f, 700.0f, imageSize.y - 150.0f);
-    ObjetoRectangulo plataforma6(200.0f, 20.0f, 1000.0f, imageSize.y - 150.0f);
+    // Sección 3. --------------*
+    float posicionS3 = imageSize.y - 350.0f;
+    ObjetoRectangulo plataforma9(anchoP, alturaP, 100.0f, posicionS3);
+    ObjetoRectangulo plataforma10(anchoP, alturaP, 400.0f, posicionS3);
+    ObjetoRectangulo plataforma11(anchoP, alturaP, 700.0f, posicionS3);
+    ObjetoRectangulo plataforma12(anchoP, alturaP, 1000.0f, posicionS3);
+
+    // Seccion 4. --------------*
+    float posicionS4 = imageSize.y - 450.0f;
+    ObjetoRectangulo plataforma13(anchoP, alturaP, 100.0f, posicionS4);
+    ObjetoRectangulo plataforma14(anchoP, alturaP, 400.0f, posicionS4);
+    ObjetoRectangulo plataforma15(anchoP, alturaP, 700.0f, posicionS4);
+    ObjetoRectangulo plataforma16(anchoP, alturaP, 1000.0f, posicionS4);
+
+    // Sección 5. --------------*
+    float posicionS5 = imageSize.y - 550.0f;
+    ObjetoRectangulo plataforma17(anchoP, alturaP, 100.0f, posicionS5);
+    ObjetoRectangulo plataforma18(anchoP, alturaP, 400.0f, posicionS5);
+    ObjetoRectangulo plataforma19(anchoP, alturaP, 700.0f, posicionS5);
+    ObjetoRectangulo plataforma20(anchoP, alturaP, 1000.0f, posicionS5);
+    // -------------------------------------------------------------------------*
 
     // ✅ CREAR ENEMIGOS
     vector<Enemigo> enemigos;
@@ -218,6 +249,20 @@ int main() {
         plataforma4.dibujar(window);
         plataforma5.dibujar(window);
         plataforma6.dibujar(window);
+        plataforma7.dibujar(window);
+        plataforma8.dibujar(window);
+        plataforma9.dibujar(window);
+        plataforma10.dibujar(window);
+        plataforma11.dibujar(window);
+        plataforma12.dibujar(window);
+        plataforma13.dibujar(window);
+        plataforma14.dibujar(window);
+        plataforma15.dibujar(window);
+        plataforma16.dibujar(window);
+        plataforma17.dibujar(window);
+        plataforma18.dibujar(window);
+        plataforma19.dibujar(window);
+        plataforma20.dibujar(window);
         
         // ✅ DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
@@ -225,8 +270,9 @@ int main() {
         }
         
         window.draw(playerSprite);
+       // window.draw(EnemigoSpirte);
         window.display();
-        window.draw(EnemigoSpirte);
+        
     }
 
     return 0;
