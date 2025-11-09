@@ -103,6 +103,12 @@ int main() {
     ObjetoRectangulo Plataforma1_2(anchoP, alturaP, 500.0f, posicion_Plataforma_S1);
     ObjetoRectangulo Plataforma1_3(anchoP, alturaP, 900.0f, posicion_Plataforma_S1);
 
+    //Plataforma superior
+    float posicion_Plataforma_Superior = imageSize.y - 430.0f;
+    float anchoP_Superior = 600.0f;           // Variable local para ancho de plataforma.
+    float alturaP_Superior = 20.0f;           // Variable local para altura de plataforma.
+    ObjetoRectangulo Plataforma1_4(anchoP_Superior, alturaP_Superior, 500.0f, posicion_Plataforma_Superior);
+
 
     //ESCALERA 1
     float posicionS1 = imageSize.y - 200.0f;
@@ -151,18 +157,39 @@ int main() {
     float posicionS3_3 = imageSize.y - 170.0f;
     ObjetoRectangulo Escalon3_3(ancho_Escalones, altura_Escalones, 900.0f, posicionS3_3);
 
-    // Vectores para agrupar las plataformas
-    vector<ObjetoRectangulo*> todosBarandales = {&Barandal_1, &Barandal_2, &Barandal_3, &Barandal_4, &Barandal_5, &Barandal_6};
 
-    vector<ObjetoRectangulo*> todosEscalones = {&Escalon_1_1, &Escalon_2_1, &Escalon_3_1, &Escalon1_2, &Escalon2_2, &Escalon3_2, &Escalon1_3, &Escalon2_3, &Escalon3_3};
+    //ESCALERA 4
+    float ancho_Barandal_Escaleras2 = 10.0f;           // Variable local para ancho de plataforma.
+    float altura_Barandal_Escaleras2 = 220.0f;           // Variable local para altura de plataforma.
+    float posicionS4 = imageSize.y - 420.0f;
+
+    ObjetoRectangulo Barandal_7(ancho_Barandal_Escaleras2, altura_Barandal_Escaleras2, 990.0f, posicionS4);
+    ObjetoRectangulo Barandal_8(ancho_Barandal_Escaleras2, altura_Barandal_Escaleras2, 1030.0f, posicionS4);
+
+    float posicionS4_1 = imageSize.y - 260.0f;
+    ObjetoRectangulo Escalon1_4(ancho_Escalones, altura_Escalones, 990.0f, posicionS4_1);
+
+    float posicionS4_2 = imageSize.y - 300.0f;
+    ObjetoRectangulo Escalon2_4(ancho_Escalones, altura_Escalones, 990.0f, posicionS4_2);
     
-    vector<ObjetoRectangulo*> todasPlataformas = {&Plataforma1_1, &Plataforma1_2, &Plataforma1_3};
+    float posicionS4_3 = imageSize.y - 350.0f;
+    ObjetoRectangulo Escalon3_4(ancho_Escalones, altura_Escalones, 990.0f, posicionS4_3);
+
+
+    // ========================================================================
+    // Vectores para agrupar las plataformas
+    // ========================================================================
+    vector<ObjetoRectangulo*> todosBarandales = {&Barandal_1, &Barandal_2, &Barandal_3, &Barandal_4, &Barandal_5, &Barandal_6, &Barandal_7, &Barandal_8};
+
+    vector<ObjetoRectangulo*> todosEscalones = {&Escalon_1_1, &Escalon_2_1, &Escalon_3_1, &Escalon1_2, &Escalon2_2, &Escalon3_2, &Escalon1_3, &Escalon2_3, &Escalon3_3, &Escalon1_4, &Escalon2_4, &Escalon3_4};
+    
+    vector<ObjetoRectangulo*> todasPlataformas = {&Plataforma1_1, &Plataforma1_2, &Plataforma1_3, &Plataforma1_4};
     
     vector<ObjetoRectangulo*> todosLosObjetos = {
 
         &Barandal_1, &Barandal_2, &Barandal_3, &Barandal_4, &Barandal_5, &Barandal_6,
         &Escalon_1_1, &Escalon_2_1, &Escalon_3_1, &Escalon1_2, &Escalon2_2, &Escalon3_2, 
-        &Escalon1_3, &Escalon2_3, &Escalon3_3, &Plataforma1_1, &Plataforma1_2, &Plataforma1_3
+        &Escalon1_3, &Escalon2_3, &Escalon3_3, &Escalon1_4, &Escalon2_4, &Escalon3_4, &Plataforma1_1, &Plataforma1_2, &Plataforma1_3, &Plataforma1_4
     };
 
     //  CREAR ENEMIGOS
@@ -315,9 +342,19 @@ int main() {
         Escalon2_3.dibujar(window);
         Escalon3_3.dibujar(window);
 
+        //Escalera 4
+        Barandal_7.dibujar(window);
+        Barandal_8.dibujar(window);
+
+        Escalon1_4.dibujar(window);
+        Escalon2_4.dibujar(window);
+        Escalon3_4.dibujar(window);
+
+        // Dibujar plataformas en pantalla.
         Plataforma1_1.dibujar(window);
         Plataforma1_2.dibujar(window);
         Plataforma1_3.dibujar(window);
+        Plataforma1_4.dibujar(window);
 
         // ✅ DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
