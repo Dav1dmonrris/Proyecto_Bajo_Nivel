@@ -6,7 +6,7 @@ Movimiento::Movimiento(float posX, float posY, float ancho, float alto)
       velocidad(0.0f, 0.0f),
       tamaño(ancho, alto),
       velocidadMovimiento(500.0f),
-      fuerzaSalto(-600.0f),
+      fuerzaSalto(-470.0f),
       gravedad(1100.0f),
       friccion(0.85f),
       enSuelo(false),
