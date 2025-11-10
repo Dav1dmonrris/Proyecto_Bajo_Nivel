@@ -24,11 +24,17 @@ bool verificarColisiones(Movimiento& jugador, const vector<ObjetoRectangulo*>& p
 }
 
 int main() {
+
+    // ========================================================================
     // ==================== CONFIGURACIÓN INICIAL =============================
     // ========================================================================
-    // Cargar texturas
+
     // ------------------------------------------------------------------------
+    //                         Cargar texturas
+    // ------------------------------------------------------------------------
+
     // Fondo del juego.
+
     Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/Sky.png")) {
         cout << "ERROR: No se pudo cargar la imagen de fondo!" << endl;
@@ -36,6 +42,7 @@ int main() {
     }
     
     // Imagen de Mario.
+
     Texture playerTexture;
     if (!playerTexture.loadFromFile("Recursos/MarioXD.png")) {
         cout << "ERROR: No se pudo cargar la imagen del personaje!" << endl;
@@ -43,12 +50,18 @@ int main() {
     }
     
     // Imagen del enemigo.
+
     Texture enemyTexture;
     bool tieneTexturaEnemigo = enemyTexture.loadFromFile("Recursos/goomba.png");
+
     if (!tieneTexturaEnemigo) {
+
         cout << " No se pudo cargar goomba.png - Los enemigos serán invisibles" << endl;
+
     } else {
+
         cout << "Textura de enemigo cargada correctamente" << endl;
+
     }
     
     // ========================================================================
@@ -58,46 +71,47 @@ int main() {
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
     window.setFramerateLimit(60);
     
-    // Crear sprites --------------------------*
+    //                             Crear sprites 
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
     Sprite EnemigoSpirte(enemyTexture);
     
-    // Obtener tamaño del personaje ---------------------------------------------------------*
+    //                      Obtener tamaño del personaje 
     Vector2u playerSizeU = playerTexture.getSize();
     Vector2f playerSize(static_cast<float>(playerSizeU.x), static_cast<float>(playerSizeU.y));
     
     //=========================================================================
     // ==========                 CREAR OBJETOS                 ===============
     // ========================================================================
-    // Jugador -------------------------------*
+
+    //                              Jugador 
     Movimiento jugador(
-        imageSize.x / 2.0f - playerSize.x / 2,
-        imageSize.y - 150.0f,
-        playerSize.x,
-        playerSize.y
-    ); //-------------------------------------*
+        imageSize.x / 2.0f - playerSize.x / 2, imageSize.y - 150.0f, playerSize.x, playerSize.y
+    ); 
     
-    // Suelo -------------------------------------------*
+    // Suelo 
     RectangleShape ground(Vector2f(imageSize.x, 50.0f));
     ground.setPosition({0.0f, imageSize.y - 50.0f});
     ground.setFillColor(Color(100, 70, 30));
-    // -------------------------------------------------*
     
-    // Plataformas | Tamaño igualitaro 200 x 20 ================================*
+    
+    // Plataformas | Tamaño igualitaro 200 x 20 
     // --------------------------------------------------------------------------
     float anchoP = 200.0f;           // Variable local para ancho de plataforma.
     float alturaP = 20.0f;           // Variable local para altura de plataforma.
 
-    //Escaleras de plataformas adicionales (opcional)
-    float ancho_Barandal_Escaleras = 10.0f;           // Variable local para ancho de plataforma.
-    float altura_Barandal_Escaleras = 150.0f;           // Variable local para altura de plataforma.
+    //Escaleras de plataformas adicionales 
+    float ancho_Barandal_Escaleras = 10.0f;           // ancho de los soportes de las escaleras.
+    float altura_Barandal_Escaleras = 150.0f;           // altura de los soportes de las escaleras.
 
-    float ancho_Escalones = 40.0f;           // Variable local para ancho de plataforma.
-    float altura_Escalones = 10.0f;           // Variable local para
+    float ancho_Escalones = 40.0f;           // ancho de los escalones.
+    float altura_Escalones = 10.0f;           // altura de los escalones.
 
     // Sección 1. -------------*
-    //Plataforma 1
+
+    //======================================================================
+    //PLATAFORMA 1
+    //======================================================================
     float posicion_Plataforma_S1 = imageSize.y - 200.0f;
     ObjetoRectangulo Plataforma1_1(anchoP, alturaP, 100.0f, posicion_Plataforma_S1);
     ObjetoRectangulo Plataforma1_2(anchoP, alturaP, 500.0f, posicion_Plataforma_S1);
@@ -109,8 +123,9 @@ int main() {
     float alturaP_Superior = 20.0f;           // Variable local para altura de plataforma.
     ObjetoRectangulo Plataforma1_4(anchoP_Superior, alturaP_Superior, 500.0f, posicion_Plataforma_Superior);
 
-
+    //======================================================================
     //ESCALERA 1
+    //======================================================================
     float posicionS1 = imageSize.y - 200.0f;
     ObjetoRectangulo Barandal_1(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 100.0f, posicionS1);
     ObjetoRectangulo Barandal_2(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 140.0f, posicionS1);
@@ -126,7 +141,9 @@ int main() {
 
     // Sección 2. --------------*
 
+    //======================================================================
     //ESCALERA 2
+    //======================================================================
     float posicionS2 = imageSize.y - 200.0f;
     ObjetoRectangulo Barandal_3(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 500.0f, posicionS2);
     ObjetoRectangulo Barandal_4(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 540.0f, posicionS2);
@@ -142,7 +159,9 @@ int main() {
 
     // Sección 3. --------------*
 
+    //======================================================================
     //ESCALERA 3
+    //======================================================================
     float posicionS3 = imageSize.y - 200.0f;
 
     ObjetoRectangulo Barandal_5(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 900.0f, posicionS3);
@@ -158,7 +177,9 @@ int main() {
     ObjetoRectangulo Escalon3_3(ancho_Escalones, altura_Escalones, 900.0f, posicionS3_3);
 
 
+    //=======================================================================
     //ESCALERA 4
+    //=======================================================================
     float ancho_Barandal_Escaleras2 = 10.0f;           // Variable local para ancho de plataforma.
     float altura_Barandal_Escaleras2 = 220.0f;           // Variable local para altura de plataforma.
     float posicionS4 = imageSize.y - 420.0f;
