@@ -11,13 +11,18 @@ using namespace sf;
 
 // Función para verificar colisiones con múltiples plataformas
 bool verificarColisiones(Movimiento& jugador, const vector<ObjetoRectangulo*>& plataformas) {
+    
     bool enPlataforma = false;
     
     for (auto& plataforma : plataformas) {
+
         if (jugador.verificarColisionConPlataforma(plataforma->ObtenerPosicion(), plataforma->ObtenerTamaño())) {
+
             jugador.resolverColisionPlataforma(plataforma->ObtenerPosicion(), plataforma->ObtenerTamaño());
+
             enPlataforma = true;
         }
+
     }
     
     return enPlataforma;
@@ -95,24 +100,29 @@ int main() {
     ground.setFillColor(Color(100, 70, 30));
     
     
-    // Plataformas | Tamaño igualitaro 200 x 20 
+    // Variables para plataformas 200 x 20
     // --------------------------------------------------------------------------
     float anchoP = 200.0f;           // Variable local para ancho de plataforma.
     float alturaP = 20.0f;           // Variable local para altura de plataforma.
 
-    //Escaleras de plataformas adicionales 
+
+    //Variables para escaleras 10 x 150
+    // --------------------------------------------------------------------------
     float ancho_Barandal_Escaleras = 10.0f;           // ancho de los soportes de las escaleras.
     float altura_Barandal_Escaleras = 150.0f;           // altura de los soportes de las escaleras.
 
+    //Variables para escalones 40 x 10
+    // --------------------------------------------------------------------------
     float ancho_Escalones = 40.0f;           // ancho de los escalones.
     float altura_Escalones = 10.0f;           // altura de los escalones.
 
-    // Sección 1. -------------*
 
     //======================================================================
     //PLATAFORMA 1
     //======================================================================
+
     float posicion_Plataforma_S1 = imageSize.y - 200.0f;
+
     ObjetoRectangulo Plataforma1_1(anchoP, alturaP, 100.0f, posicion_Plataforma_S1);
     ObjetoRectangulo Plataforma1_2(anchoP, alturaP, 500.0f, posicion_Plataforma_S1);
     ObjetoRectangulo Plataforma1_3(anchoP, alturaP, 900.0f, posicion_Plataforma_S1);
@@ -126,7 +136,9 @@ int main() {
     //======================================================================
     //ESCALERA 1
     //======================================================================
+
     float posicionS1 = imageSize.y - 200.0f;
+
     ObjetoRectangulo Barandal_1(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 100.0f, posicionS1);
     ObjetoRectangulo Barandal_2(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 140.0f, posicionS1);
 
@@ -139,12 +151,13 @@ int main() {
     float posicionS1_3 = imageSize.y - 170.0f;
     ObjetoRectangulo Escalon_3_1(ancho_Escalones, altura_Escalones, 100.0f, posicionS1_3);
 
-    // Sección 2. --------------*
 
     //======================================================================
     //ESCALERA 2
     //======================================================================
+
     float posicionS2 = imageSize.y - 200.0f;
+
     ObjetoRectangulo Barandal_3(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 500.0f, posicionS2);
     ObjetoRectangulo Barandal_4(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 540.0f, posicionS2);
 
@@ -157,11 +170,10 @@ int main() {
     float posicionS2_3 = imageSize.y - 170.0f;
     ObjetoRectangulo Escalon3_2(ancho_Escalones, altura_Escalones, 500.0f, posicionS2_3);
 
-    // Sección 3. --------------*
-
     //======================================================================
     //ESCALERA 3
     //======================================================================
+
     float posicionS3 = imageSize.y - 200.0f;
 
     ObjetoRectangulo Barandal_5(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 900.0f, posicionS3);
@@ -233,7 +245,10 @@ int main() {
     int puntuacion = 0;
     Clock clock;
     
+    // ========================================================================
     // ========================== BUCLE PRINCIPAL =============================
+    // ========================================================================
+
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
         
@@ -252,7 +267,9 @@ int main() {
         
         if (!jugadorVivo) continue;
         
+        // ====================================================================
         // ========================= ACTUALIZAR JUEGO =========================
+        // ====================================================================
         
         // Jugador
         jugador.manejarEntrada();
@@ -266,9 +283,11 @@ int main() {
             }
         }
         
-        // ===================== DETECCIÓN DE COLISIONES ======================
+        // ====================================================================
+        // ==================== DETECCIÓN DE COLISIONES =======================
+        // ====================================================================
         
-        // OBTENER POSICIÓN DEL JUGADOR UNA SOLA VEZ
+        // Posicion del jugador
         Vector2f posJugador = jugador.obtenerPosicion();
         
         // Colisión con suelo
@@ -279,7 +298,7 @@ int main() {
             jugador.establecerEnSuelo(false);
         }
         
-        // COLISIÓN CON PLATAFORMAS USANDO LA FUNCIÓN
+        // Colisión con plataformas
         bool enPlataforma = verificarColisiones(jugador, todosLosObjetos);
 
         jugador.establecerEnPlataforma(enPlataforma);
@@ -321,10 +340,13 @@ int main() {
             jugador.establecerVelocidadX(0);
         }
         
-        // ===================== ACTUALIZAR GRÁFICOS =====================
+        // ====================================================================
+        // ===================== ACTUALIZAR GRÁFICOS ==========================
+        // ====================================================================
+
         playerSprite.setPosition(posJugador);
         
-        // Rotación del sprite -----------------------*
+        // Rotación del sprite 
         Vector2f velocidad = jugador.obtenerVelocidad();
         if (velocidad.x > 0.1f) {
             playerSprite.setScale({1.0f, 1.0f});
@@ -332,7 +354,8 @@ int main() {
             playerSprite.setScale({-1.0f, 1.0f});
         }
         
-        // ============================ RENDERIZADO ===========================
+        // ====================================================================
+        // ========================= RENDERIZADO ==============================
         // ====================================================================
         window.clear(Color::Black);
         window.draw(backgroundSprite);
@@ -377,7 +400,7 @@ int main() {
         Plataforma1_3.dibujar(window);
         Plataforma1_4.dibujar(window);
 
-        // ✅ DIBUJAR ENEMIGOS
+        // DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
             enemigo.dibujar(window);
         }
