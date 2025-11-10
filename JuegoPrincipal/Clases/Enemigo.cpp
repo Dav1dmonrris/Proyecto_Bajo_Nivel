@@ -67,7 +67,7 @@ void Enemigo::configurarTextura(const sf::Texture& textura) {
     sprite.setOrigin({tamaño.x / 2.0f, tamaño.y / 2.0f});
     sprite.setPosition(posicion);
     
-    std::cout << "✅ Textura configurada para enemigo - Tamaño: " << tamaño.x << "x" << tamaño.y << std::endl;
+    std::cout << " Textura configurada para enemigo - Tamaño: " << tamaño.x << "x" << tamaño.y << std::endl;
 }
 
 void Enemigo::matar() {
