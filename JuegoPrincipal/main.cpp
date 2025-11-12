@@ -68,7 +68,7 @@ int main() {
     //                             Crear ventana
     // ========================================================================
     Vector2u imageSize = backgroundTexture.getSize();
-    RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Juego de Plataformas");
+    RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Mario Vlos");
     window.setFramerateLimit(60);
     
     //                             Crear sprites 
