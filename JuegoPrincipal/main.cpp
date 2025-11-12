@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <cmath> 
 #include "Clases/Movimiento.hpp"
 #include "Clases/ObjetoRectangulo.hpp"
 #include "Clases/Enemigo.hpp"
@@ -28,6 +29,30 @@ bool verificarColisiones(Movimiento& jugador, const vector<ObjetoRectangulo*>& p
     }
     
     return enPlataforma;
+}
+
+// ===========================================================================================
+std::unique_ptr<sf::Text> crearTexto(const std::string& contenido, unsigned int tamaño = 15) {
+    static sf::Font font;
+    static bool fuenteCargada = false;
+    
+    // Cargar fuente solo una vez
+    if (!fuenteCargada) {
+        fuenteCargada = font.openFromFile("Recursos/Keyboard.ttf");
+        if (!fuenteCargada) {
+            std::cout << " No se pudo cargar fuente - Usando sistema por defecto" << std::endl;
+            return nullptr;
+        }
+    }
+    
+    // Crear texto con la fuente cargada
+    auto texto = std::make_unique<sf::Text>(font, contenido, tamaño);
+    texto->setFillColor(sf::Color::Yellow);
+    texto->setOutlineColor(sf::Color::Black);
+    texto->setOutlineThickness(1.5f);
+    texto->setPosition({20.0f, 20.0f});
+    
+    return texto;
 }
 
 int main() {
@@ -63,15 +88,19 @@ int main() {
     } else {
         cout << "Textura de enemigo cargada correctamente" << endl;
     }
-    
+        
     // ========================================================================
     //                             Crear ventana
     // ========================================================================
     Vector2u imageSize = backgroundTexture.getSize();
     RenderWindow window(VideoMode({imageSize.x, imageSize.y}), "Mario Vlos");
     window.setFramerateLimit(60);
-    
-    //                             Crear sprites 
+
+    //SOLUCIÓN SIMPLE: Crear texto solo cuando se necesite
+    unique_ptr<sf::Text> textoMensaje = nullptr;
+
+    //                             Crear sprites
+    // ----------------------------------------- 
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
     
@@ -218,7 +247,7 @@ if (tieneTexturaEnemigo) {
     }
 }
     cout << "👾 " << enemigos.size() << " enemigos creados" << endl;
-    cout << "🎯 Meta colocada en la plataforma superior" << endl;
+    cout << "Meta colocada en la plataforma superior" << endl;
     
     // Variables del juego
     bool jugadorVivo = true;
@@ -305,7 +334,7 @@ if (tieneTexturaEnemigo) {
                     jugador.establecerVelocidadY(-300.0f);
                 } else {
                     jugadorVivo = false;
-                    cout << "💀 El jugador ha muerto! Puntuación final: " << puntuacion << endl;
+                    cout << "El jugador ha muerto! Puntuación final: " << puntuacion << endl;
                 }
             }
         }
@@ -323,9 +352,50 @@ if (tieneTexturaEnemigo) {
         if (todosMuertos) {
             if (meta.verificarColision(posJugador, playerSize)) {
                 nivelCompletado = true;
-                cout << "🏆 ¡NIVEL COMPLETADO! Puntuación final: " << puntuacion << endl;
-                cout << "🎯 Presiona ESC para salir" << endl;
+                cout << "¡NIVEL COMPLETADO! Puntuación final " << puntuacion << " XDD" << endl;
+                cout << "Presiona ESC para salir" << endl;
             }
+        }
+
+        // ====================================================================
+        // ==================== DETECCIÓN DE PROXIMIDAD Y MENSAJES ============
+        // ====================================================================
+        // Verificar si el jugador está cerca de la meta
+        Vector2f posMeta(600.0f, 210.0f);
+        bool cercaDeMeta = (std::abs(posJugador.x - posMeta.x) < 150.0f && 
+                            std::abs(posJugador.y - posMeta.y) < 100.0f);
+
+        // Determinar qué mensaje mostrar
+        std::string mensaje = "";
+        sf::Color colorMensaje = sf::Color::Yellow;
+
+        if (!todosMuertos && cercaDeMeta) {
+            mensaje = "Elimina a TODOS los enemigos\npara activar la meta";
+            colorMensaje = sf::Color::Red;
+        } else if (todosMuertos && !nivelCompletado) {
+            mensaje = "Meta ACTIVADA\nVe por la bandera VERDE";
+            colorMensaje = sf::Color::Green;
+        } else if (nivelCompletado) {
+            mensaje = "NIVEL COMPLETADO\nPuntuacion " + std::to_string(puntuacion) + " XDDD";
+            colorMensaje = sf::Color::Cyan;
+        }
+
+        // ✅ CREAR O ACTUALIZAR TEXTO SOLO SI HAY MENSAJE
+        if (!mensaje.empty()) {
+            if (!textoMensaje) {
+                // Crear texto por primera vez
+                textoMensaje = crearTexto(mensaje);
+                if (textoMensaje) {
+                    textoMensaje->setFillColor(colorMensaje);
+                }
+            } else {
+                // Actualizar texto existente
+                textoMensaje->setString(mensaje);
+                textoMensaje->setFillColor(colorMensaje);
+            }
+        } else if (textoMensaje) {
+            // Si no hay mensaje, limpiar el texto
+            textoMensaje->setString("");
         }
         
         // Límites de pantalla
@@ -401,10 +471,15 @@ if (tieneTexturaEnemigo) {
         }
         
         window.draw(playerSprite);
+
+        // Dibujar mensaje si existe y tiene contenido
+        if (textoMensaje && !textoMensaje->getString().isEmpty()) {
+            window.draw(*textoMensaje);
+        }
         
         // MOSTRAR MENSAJE SI SE COMPLETÓ EL NIVEL
         if (nivelCompletado) {
-            cout << "🎉 ¡Felicidades! Has ganado el juego." << endl;
+            cout << "¡Felicidades! Has ganado el juego." << endl;
         }
         
         window.display();
