@@ -2,23 +2,29 @@
 #include <iostream>
 
 Meta::Meta(float x, float y) : posicion(x, y), alcanzada(false) {
-    // Constructor vacío - no necesita inicializar sprite
+    // --** Constructor vacío - no necesita inicializar sprite **--
 }
 
-void Meta::dibujar(sf::RenderWindow& ventana) {
+void Meta::dibujar(sf::RenderWindow& ventana, bool activa) {
     if (!alcanzada) {
         // Dibujar poste de bandera
+        // -------------------------------------------
         sf::RectangleShape poste(sf::Vector2f(5, 80));
         poste.setPosition(posicion);
         poste.setFillColor(sf::Color::White);
         ventana.draw(poste);
         
         // Dibujar bandera
+        // ----------------------------------------------------------------
         sf::ConvexShape bandera(3);
         bandera.setPoint(0, sf::Vector2f(posicion.x + 5, posicion.y + 10));
         bandera.setPoint(1, sf::Vector2f(posicion.x + 35, posicion.y + 20));
         bandera.setPoint(2, sf::Vector2f(posicion.x + 5, posicion.y + 30));
         bandera.setFillColor(sf::Color::Red);
+
+        // Cambiar a color verde si los enemigos están muertos.
+        bandera.setFillColor(activa ? sf::Color::Green : sf::Color::Red);
+
         ventana.draw(bandera);
     }
 }

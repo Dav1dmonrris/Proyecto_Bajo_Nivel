@@ -309,13 +309,25 @@ int main() {
         }
         
         // ✅ COLISIÓN CON META - EN LA POSICIÓN CORRECTA
-        if (meta.verificarColision(posJugador, playerSize)) {
-            nivelCompletado = true;
-            cout << "🏆 ¡NIVEL COMPLETADO! Puntuación final: " << puntuacion << endl;
-            cout << "🎯 Presiona ESC para salir" << endl;
+        // ==========================================================================
+        bool todosMuertos = true;
+        for (auto& enemigo : enemigos) {
+            if (enemigo.estaVivo()) {
+                todosMuertos = false;
+                break;
+            }
+        }
+
+        if (todosMuertos) {
+            if (meta.verificarColision(posJugador, playerSize)) {
+                nivelCompletado = true;
+                cout << "🏆 ¡NIVEL COMPLETADO! Puntuación final: " << puntuacion << endl;
+                cout << "🎯 Presiona ESC para salir" << endl;
+            }
         }
         
         // Límites de pantalla
+        // =======================================================
         if (posJugador.x < 0) {
             jugador.establecerPosicion(Vector2f(0, posJugador.y));
             jugador.establecerVelocidadX(0);
@@ -377,7 +389,10 @@ int main() {
         Plataforma1_4.dibujar(window);
 
         // ✅ DIBUJAR META (siempre)
-        meta.dibujar(window);
+        //meta.dibujar(window);
+        bool todosMuertosDibujar = std::all_of(enemigos.begin(), enemigos.end(),
+                                [](const Enemigo& e){ return !e.estaVivo(); });
+        meta.dibujar(window, todosMuertos);
 
         // DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
