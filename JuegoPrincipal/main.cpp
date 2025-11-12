@@ -5,6 +5,7 @@
 #include "Clases/Movimiento.hpp"
 #include "Clases/ObjetoRectangulo.hpp"
 #include "Clases/Enemigo.hpp"
+#include "Clases/Meta.hpp"
 
 using namespace std;
 using namespace sf;
@@ -39,7 +40,6 @@ int main() {
     // ------------------------------------------------------------------------
 
     // Fondo del juego.
-
     Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("Recursos/Sky.png")) {
         cout << "ERROR: No se pudo cargar la imagen de fondo!" << endl;
@@ -47,7 +47,6 @@ int main() {
     }
     
     // Imagen de Mario.
-
     Texture playerTexture;
     if (!playerTexture.loadFromFile("Recursos/MarioXD.png")) {
         cout << "ERROR: No se pudo cargar la imagen del personaje!" << endl;
@@ -55,18 +54,13 @@ int main() {
     }
     
     // Imagen del enemigo.
-
     Texture enemyTexture;
     bool tieneTexturaEnemigo = enemyTexture.loadFromFile("Recursos/goomba.png");
 
     if (!tieneTexturaEnemigo) {
-
         cout << " No se pudo cargar goomba.png - Los enemigos serán invisibles" << endl;
-
     } else {
-
         cout << "Textura de enemigo cargada correctamente" << endl;
-
     }
     
     // ========================================================================
@@ -79,7 +73,6 @@ int main() {
     //                             Crear sprites 
     Sprite backgroundSprite(backgroundTexture);
     Sprite playerSprite(playerTexture);
-    Sprite EnemigoSpirte(enemyTexture);
     
     //                      Obtener tamaño del personaje 
     Vector2u playerSizeU = playerTexture.getSize();
@@ -99,28 +92,21 @@ int main() {
     ground.setPosition({0.0f, imageSize.y - 50.0f});
     ground.setFillColor(Color(100, 70, 30));
     
-    
     // Variables para plataformas 200 x 20
-    // --------------------------------------------------------------------------
-    float anchoP = 200.0f;           // Variable local para ancho de plataforma.
-    float alturaP = 20.0f;           // Variable local para altura de plataforma.
+    float anchoP = 200.0f;
+    float alturaP = 20.0f;
 
+    // Variables para escaleras 10 x 150
+    float ancho_Barandal_Escaleras = 10.0f;
+    float altura_Barandal_Escaleras = 150.0f;
 
-    //Variables para escaleras 10 x 150
-    // --------------------------------------------------------------------------
-    float ancho_Barandal_Escaleras = 10.0f;           // ancho de los soportes de las escaleras.
-    float altura_Barandal_Escaleras = 150.0f;           // altura de los soportes de las escaleras.
-
-    //Variables para escalones 40 x 10
-    // --------------------------------------------------------------------------
-    float ancho_Escalones = 40.0f;           // ancho de los escalones.
-    float altura_Escalones = 10.0f;           // altura de los escalones.
-
+    // Variables para escalones 40 x 10
+    float ancho_Escalones = 40.0f;
+    float altura_Escalones = 10.0f;
 
     //======================================================================
     //PLATAFORMA 1
     //======================================================================
-
     float posicion_Plataforma_S1 = imageSize.y - 200.0f;
 
     ObjetoRectangulo Plataforma1_1(anchoP, alturaP, 100.0f, posicion_Plataforma_S1);
@@ -129,14 +115,13 @@ int main() {
 
     //Plataforma superior
     float posicion_Plataforma_Superior = imageSize.y - 430.0f;
-    float anchoP_Superior = 600.0f;           // Variable local para ancho de plataforma.
-    float alturaP_Superior = 20.0f;           // Variable local para altura de plataforma.
+    float anchoP_Superior = 600.0f;
+    float alturaP_Superior = 20.0f;
     ObjetoRectangulo Plataforma1_4(anchoP_Superior, alturaP_Superior, 500.0f, posicion_Plataforma_Superior);
 
     //======================================================================
     //ESCALERA 1
     //======================================================================
-
     float posicionS1 = imageSize.y - 200.0f;
 
     ObjetoRectangulo Barandal_1(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 100.0f, posicionS1);
@@ -151,11 +136,9 @@ int main() {
     float posicionS1_3 = imageSize.y - 170.0f;
     ObjetoRectangulo Escalon_3_1(ancho_Escalones, altura_Escalones, 100.0f, posicionS1_3);
 
-
     //======================================================================
     //ESCALERA 2
     //======================================================================
-
     float posicionS2 = imageSize.y - 200.0f;
 
     ObjetoRectangulo Barandal_3(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 500.0f, posicionS2);
@@ -173,7 +156,6 @@ int main() {
     //======================================================================
     //ESCALERA 3
     //======================================================================
-
     float posicionS3 = imageSize.y - 200.0f;
 
     ObjetoRectangulo Barandal_5(ancho_Barandal_Escaleras, altura_Barandal_Escaleras, 900.0f, posicionS3);
@@ -188,12 +170,11 @@ int main() {
     float posicionS3_3 = imageSize.y - 170.0f;
     ObjetoRectangulo Escalon3_3(ancho_Escalones, altura_Escalones, 900.0f, posicionS3_3);
 
-
     //=======================================================================
     //ESCALERA 4
     //=======================================================================
-    float ancho_Barandal_Escaleras2 = 10.0f;           // Variable local para ancho de plataforma.
-    float altura_Barandal_Escaleras2 = 220.0f;           // Variable local para altura de plataforma.
+    float ancho_Barandal_Escaleras2 = 10.0f;
+    float altura_Barandal_Escaleras2 = 220.0f;
     float posicionS4 = imageSize.y - 420.0f;
 
     ObjetoRectangulo Barandal_7(ancho_Barandal_Escaleras2, altura_Barandal_Escaleras2, 990.0f, posicionS4);
@@ -208,30 +189,26 @@ int main() {
     float posicionS4_3 = imageSize.y - 350.0f;
     ObjetoRectangulo Escalon3_4(ancho_Escalones, altura_Escalones, 990.0f, posicionS4_3);
 
-
     // ========================================================================
     // Vectores para agrupar las plataformas
     // ========================================================================
-    vector<ObjetoRectangulo*> todosBarandales = {&Barandal_1, &Barandal_2, &Barandal_3, &Barandal_4, &Barandal_5, &Barandal_6, &Barandal_7, &Barandal_8};
-
-    vector<ObjetoRectangulo*> todosEscalones = {&Escalon_1_1, &Escalon_2_1, &Escalon_3_1, &Escalon1_2, &Escalon2_2, &Escalon3_2, &Escalon1_3, &Escalon2_3, &Escalon3_3, &Escalon1_4, &Escalon2_4, &Escalon3_4};
-    
-    vector<ObjetoRectangulo*> todasPlataformas = {&Plataforma1_1, &Plataforma1_2, &Plataforma1_3, &Plataforma1_4};
-    
     vector<ObjetoRectangulo*> todosLosObjetos = {
-
         &Barandal_1, &Barandal_2, &Barandal_3, &Barandal_4, &Barandal_5, &Barandal_6,
         &Escalon_1_1, &Escalon_2_1, &Escalon_3_1, &Escalon1_2, &Escalon2_2, &Escalon3_2, 
-        &Escalon1_3, &Escalon2_3, &Escalon3_3, &Escalon1_4, &Escalon2_4, &Escalon3_4, &Plataforma1_1, &Plataforma1_2, &Plataforma1_3, &Plataforma1_4
+        &Escalon1_3, &Escalon2_3, &Escalon3_3, &Escalon1_4, &Escalon2_4, &Escalon3_4, 
+        &Plataforma1_1, &Plataforma1_2, &Plataforma1_3, &Plataforma1_4
     };
 
-    //  CREAR ENEMIGOS
+    // CREAR ENEMIGOS
     vector<Enemigo> enemigos;
     enemigos.emplace_back(150.0f, 470.0f);
     enemigos.emplace_back(550.0f, 470.0f);  
     enemigos.emplace_back(950.0f, 220.0f);
+
+    // Crear meta -
+    Meta meta(600.0f, 210.0f);  // En la plataforma superior derecha
     
-    // Aplicar textura
+    // Aplicar textura a enemigos
     if (tieneTexturaEnemigo) {
         for (auto& enemigo : enemigos) {
             enemigo.configurarTextura(enemyTexture);
@@ -239,9 +216,11 @@ int main() {
     }
     
     cout << "👾 " << enemigos.size() << " enemigos creados" << endl;
+    cout << "🎯 Meta colocada en la plataforma superior" << endl;
     
     // Variables del juego
     bool jugadorVivo = true;
+    bool nivelCompletado = false;
     int puntuacion = 0;
     Clock clock;
     
@@ -265,7 +244,7 @@ int main() {
             }
         }
         
-        if (!jugadorVivo) continue;
+        if (!jugadorVivo || nivelCompletado) continue;
         
         // ====================================================================
         // ========================= ACTUALIZAR JUEGO =========================
@@ -276,7 +255,7 @@ int main() {
         jugador.manejarSalto();
         jugador.actualizar(deltaTime);
         
-        //  ACTUALIZAR ENEMIGOS
+        // ACTUALIZAR ENEMIGOS
         for (auto& enemigo : enemigos) {
             if (enemigo.estaVivo()) {
                 enemigo.actualizar(deltaTime);
@@ -300,7 +279,6 @@ int main() {
         
         // Colisión con plataformas
         bool enPlataforma = verificarColisiones(jugador, todosLosObjetos);
-
         jugador.establecerEnPlataforma(enPlataforma);
         
         // COLISIÓN CON ENEMIGOS
@@ -330,7 +308,14 @@ int main() {
             }
         }
         
-        // Límites de pantalla - USAR LA MISMA posJugador
+        // ✅ COLISIÓN CON META - EN LA POSICIÓN CORRECTA
+        if (meta.verificarColision(posJugador, playerSize)) {
+            nivelCompletado = true;
+            cout << "🏆 ¡NIVEL COMPLETADO! Puntuación final: " << puntuacion << endl;
+            cout << "🎯 Presiona ESC para salir" << endl;
+        }
+        
+        // Límites de pantalla
         if (posJugador.x < 0) {
             jugador.establecerPosicion(Vector2f(0, posJugador.y));
             jugador.establecerVelocidadX(0);
@@ -361,44 +346,38 @@ int main() {
         window.draw(backgroundSprite);
         window.draw(ground);
 
-        // Dibujar barandal de escaleras en pantalla.
-        //Escalera 1
+        // Dibujar barandal de escaleras
         Barandal_1.dibujar(window);
         Barandal_2.dibujar(window);
-
-        Escalon_1_1.dibujar(window);
-        Escalon_2_1.dibujar(window);
-        Escalon_3_1.dibujar(window);
-        
-        //Escalera 2
         Barandal_3.dibujar(window);
         Barandal_4.dibujar(window);
-
-        Escalon1_2.dibujar(window);
-        Escalon2_2.dibujar(window);
-        Escalon3_2.dibujar(window);
-
-        //Escalera 3
         Barandal_5.dibujar(window);
         Barandal_6.dibujar(window);
-
-        Escalon1_3.dibujar(window); 
-        Escalon2_3.dibujar(window);
-        Escalon3_3.dibujar(window);
-
-        //Escalera 4
         Barandal_7.dibujar(window);
         Barandal_8.dibujar(window);
 
+        // Dibujar escalones
+        Escalon_1_1.dibujar(window);
+        Escalon_2_1.dibujar(window);
+        Escalon_3_1.dibujar(window);
+        Escalon1_2.dibujar(window);
+        Escalon2_2.dibujar(window);
+        Escalon3_2.dibujar(window);
+        Escalon1_3.dibujar(window); 
+        Escalon2_3.dibujar(window);
+        Escalon3_3.dibujar(window);
         Escalon1_4.dibujar(window);
         Escalon2_4.dibujar(window);
         Escalon3_4.dibujar(window);
 
-        // Dibujar plataformas en pantalla.
+        // Dibujar plataformas
         Plataforma1_1.dibujar(window);
         Plataforma1_2.dibujar(window);
         Plataforma1_3.dibujar(window);
         Plataforma1_4.dibujar(window);
+
+        // ✅ DIBUJAR META (siempre)
+        meta.dibujar(window);
 
         // DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
@@ -406,8 +385,14 @@ int main() {
         }
         
         window.draw(playerSprite);
-        window.display();
         
+        // ✅ MOSTRAR MENSAJE SI SE COMPLETÓ EL NIVEL
+        if (nivelCompletado) {
+            // Podrías agregar aquí texto de victoria
+            cout << "🎉 ¡Felicidades! Has ganado el juego." << endl;
+        }
+        
+        window.display();
     }
 
     return 0;
