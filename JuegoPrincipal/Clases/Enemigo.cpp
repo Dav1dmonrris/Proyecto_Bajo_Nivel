@@ -75,5 +75,4 @@ void Enemigo::matar() {
 }
 
 void Enemigo::serPisado() {
-    // Implementación si necesitas
 }

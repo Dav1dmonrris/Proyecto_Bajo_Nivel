@@ -57,18 +57,3 @@ FloatRect ObjetoRectangulo::ObtenerLimites() const
 {
     return rectangulo.getGlobalBounds();
 }
-
-//----------------------------------------------------------------------------*
-// Método para verificar colisión con otro rectángulo                         |
-//----------------------------------------------------------------------------*
-/*bool ObjetoRectangulo::VerificarColision(const FloatRect& OtroObjeto) const
-{
-    FloatRect misLimites = ObtenerLimites();
-    
-    // Detección manual de colisión AABB - FUNCIONA EN TODAS LAS VERSIONES DE SFML
-    return misLimites.left < OtroObjeto.left + OtroObjeto.width &&
-           misLimites.left + misLimites.width > OtroObjeto.left &&
-           misLimites.top < OtroObjeto.top + OtroObjeto.height &&
-           misLimites.top + misLimites.height > OtroObjeto.top;
-
-}*/

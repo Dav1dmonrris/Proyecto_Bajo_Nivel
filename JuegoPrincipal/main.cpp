@@ -309,7 +309,7 @@ int main() {
             }
         }
         
-        // ✅ COLISIÓN CON META - EN LA POSICIÓN CORRECTA
+        // COLISIÓN CON META - EN LA POSICIÓN CORRECTA
         // ==========================================================================
         bool todosMuertos = true;
         for (auto& enemigo : enemigos) {
@@ -389,10 +389,9 @@ int main() {
         Plataforma1_3.dibujar(window);
         Plataforma1_4.dibujar(window);
 
-        // ✅ DIBUJAR META (siempre)
-        //meta.dibujar(window);
-        bool todosMuertosDibujar = std::all_of(enemigos.begin(), enemigos.end(),
-                                [](const Enemigo& e){ return !e.estaVivo(); });
+        // DIBUJAR META 
+        /*bool todosMuertosDibujar = std::all_of(enemigos.begin(), enemigos.end(),
+                                [](const Enemigo& e){ return !e.estaVivo(); });*/
         meta.dibujar(window, todosMuertos);
 
         // DIBUJAR ENEMIGOS
@@ -402,9 +401,8 @@ int main() {
         
         window.draw(playerSprite);
         
-        // ✅ MOSTRAR MENSAJE SI SE COMPLETÓ EL NIVEL
+        // MOSTRAR MENSAJE SI SE COMPLETÓ EL NIVEL
         if (nivelCompletado) {
-            // Podrías agregar aquí texto de victoria
             cout << "🎉 ¡Felicidades! Has ganado el juego." << endl;
         }
         
