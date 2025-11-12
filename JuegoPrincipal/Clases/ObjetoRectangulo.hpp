@@ -17,7 +17,7 @@ public:
     void dibujar(RenderWindow& ventana);
     Vector2f ObtenerPosicion() const;
     Vector2f ObtenerTamaño() const;
-    // Extras -* Por si es necesario despues *-
+    
     void CambiarPosicion(float PosicionX, float PosicionY); // Método para cambiar posición.
     void CambiarColor(const Color& color);  // Método para cambiar el color del rectángulo.
     void CambiarTamaño(float ancho, float alto); // Método para cambiar el tamaño del rectángulo.

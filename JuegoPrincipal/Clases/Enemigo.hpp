@@ -23,7 +23,7 @@ public:
     void actualizar(float deltaTime);
     void dibujar(sf::RenderWindow& ventana);
     
-    // Métodos NUEVOS
+    // Métodos 
     void configurarTextura(const sf::Texture& textura);
     sf::FloatRect obtenerBounds() const;
     void matar();

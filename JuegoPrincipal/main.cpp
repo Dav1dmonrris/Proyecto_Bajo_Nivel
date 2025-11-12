@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "Clases/Movimiento.hpp"
 #include "Clases/ObjetoRectangulo.hpp"
 #include "Clases/Enemigo.hpp"

@@ -2,7 +2,7 @@
 #include <iostream>
 
 Meta::Meta(float x, float y) : posicion(x, y), alcanzada(false) {
-    // --** Constructor vacío - no necesita inicializar sprite **--
+    
 }
 
 void Meta::dibujar(sf::RenderWindow& ventana, bool activa) {
@@ -32,11 +32,11 @@ void Meta::dibujar(sf::RenderWindow& ventana, bool activa) {
 bool Meta::verificarColision(const sf::Vector2f& posJugador, const sf::Vector2f& tamJugador) {
     if (alcanzada) return false;
     
-    // ✅ CORREGIDO para SFML 3.0 - usar Vector2f para tamaño
+    
     sf::FloatRect boundsMeta(posicion, sf::Vector2f(40, 80));
     sf::FloatRect boundsJugador(posJugador, tamJugador);
     
-    // ✅ CORREGIDO para SFML 3.0 - usar intersects
+    
     if (boundsJugador.findIntersection(boundsMeta)) {
         alcanzada = true;
         std::cout << "🎉 ¡META ALCANZADA! 🎉" << std::endl;
