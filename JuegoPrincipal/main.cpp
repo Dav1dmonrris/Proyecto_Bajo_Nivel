@@ -201,21 +201,22 @@ int main() {
     };
 
     // CREAR ENEMIGOS
-    vector<Enemigo> enemigos;
-    enemigos.emplace_back(150.0f, 470.0f);
-    enemigos.emplace_back(550.0f, 470.0f);  
-    enemigos.emplace_back(950.0f, 220.0f);
+    //vector<Enemigo> enemigos;
+    
+    vector<unique_ptr<Enemigo>> enemigos;
+    enemigos.push_back(make_unique<Enemigo>(150.0f, 470.0f));
+    enemigos.push_back(make_unique<Enemigo>(550.0f, 470.0f));  
+    enemigos.push_back(make_unique<Enemigo>(950.0f, 220.0f));
 
     // Crear meta -
     Meta meta(600.0f, 210.0f);  // En la plataforma superior derecha
     
     // Aplicar textura a enemigos
-    if (tieneTexturaEnemigo) {
-        for (auto& enemigo : enemigos) {
-            enemigo.configurarTextura(enemyTexture);
-        }
+if (tieneTexturaEnemigo) {
+    for (auto& enemigo : enemigos) {
+        enemigo->configurarTextura(enemyTexture);
     }
-    
+}
     cout << "👾 " << enemigos.size() << " enemigos creados" << endl;
     cout << "🎯 Meta colocada en la plataforma superior" << endl;
     
@@ -258,10 +259,10 @@ int main() {
         
         // ACTUALIZAR ENEMIGOS
         for (auto& enemigo : enemigos) {
-            if (enemigo.estaVivo()) {
-                enemigo.actualizar(deltaTime);
-            }
+          if (enemigo->estaVivo()) {
+        enemigo->actualizar(deltaTime);
         }
+}
         
         // ====================================================================
         // ==================== DETECCIÓN DE COLISIONES =======================
@@ -284,9 +285,9 @@ int main() {
         
         // COLISIÓN CON ENEMIGOS
         for (auto& enemigo : enemigos) {
-            if (!enemigo.estaVivo()) continue;
+            if (!enemigo->estaVivo()) continue;
             
-            sf::Vector2f posEnemigo = enemigo.getPosicion();
+            sf::Vector2f posEnemigo = enemigo->getPosicion();
             
             // Detección MANUAL
             bool hayColision = (posJugador.x < posEnemigo.x + 50.0f) &&
@@ -298,7 +299,7 @@ int main() {
                 bool jugadorPorEncima = (posJugador.y + playerSize.y) < (posEnemigo.y + 25.0f);
                 
                 if (jugadorPorEncima) {
-                    enemigo.matar();
+                    enemigo->matar();
                     puntuacion += 100;
                     cout << "👾 Enemigo eliminado! Puntuación: " << puntuacion << endl;
                     jugador.establecerVelocidadY(-300.0f);
@@ -313,7 +314,7 @@ int main() {
         // ==========================================================================
         bool todosMuertos = true;
         for (auto& enemigo : enemigos) {
-            if (enemigo.estaVivo()) {
+            if (enemigo->estaVivo()) {
                 todosMuertos = false;
                 break;
             }
@@ -396,7 +397,7 @@ int main() {
 
         // DIBUJAR ENEMIGOS
         for (auto& enemigo : enemigos) {
-            enemigo.dibujar(window);
+            enemigo->dibujar(window);
         }
         
         window.draw(playerSprite);
